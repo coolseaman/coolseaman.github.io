@@ -4,16 +4,18 @@
     var s = document.getElementsByTagName("script")[0]; 
     s.parentNode.insertBefore(hm, s);
 })();
-</script><title> NodeJS中require引入文件夹发生了什么？ · HY</title><meta name="description" content="NodeJS中require引入文件夹发生了什么？ - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">NodeJS中require引入文件夹发生了什么？</h1><div class="post-info">2017年4月28日</div><div class="post-content"><blockquote>
-<p>看NodeBB源码时，加载socket.io模块遇到了这个问题，下面是我对此问题的一些研究结论。</p>
+</script><title> NodeJS中require引入文件模块发生了什么？ · HY</title><meta name="description" content="NodeJS中require引入文件模块发生了什么？ - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">NodeJS中require引入文件模块发生了什么？</h1><div class="post-info">2017年4月28日</div><div class="post-content"><blockquote>
+<p>看NodeBB源码时，加载socket.io模块遇到了这个问题，这篇文章是我对此问题的一些研究结论。</p>
 </blockquote>
+<a id="more"></a>
+<p><strong>模块入口文件搜索路径</strong></p>
 <ul>
 <li>require引入文件夹时，node会优先查找目录下的package.json（即使有index.js也会先忽略）；</li>
 <li>然后查找package.json文件中main键值对应的x.js（模块的入口文件）；</li>
 <li>然后拿这个值进行相应模块加载；</li>
 <li>否则，如果没有main键值或者找不到x.js对应的文件，则开始在文件夹中寻找index.js文件，如果有则加载该文件，没有则抛出异常。</li>
 </ul>
-<p><strong><em>附一张自制流程图</em></strong><br><img src="../../../../img/FB30A432-24F2-4B37-811B-DD329B46BA36.png" alt="img"></p>
+<p><strong>附一张自制流程图</strong><br><img src="../../../../img/FB30A432-24F2-4B37-811B-DD329B46BA36.png" alt="img"></p>
 <p><strong>补充</strong></p>
 <ul>
 <li>如果package.json文件中main属性指定文件缺少后拓展名，Node则会进行拓展名分析，依次为js，json，node；</li>

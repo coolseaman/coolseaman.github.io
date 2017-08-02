@@ -5,9 +5,14 @@
     s.parentNode.insertBefore(hm, s);
 })();
 </script><title> 如何在同一环境下使用多个Github账户 · HY</title><meta name="description" content="如何在同一环境下使用多个Github账户 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">如何在同一环境下使用多个Github账户</h1><div class="post-info">2017年8月1日</div><div class="post-content"><blockquote>
-<p>原本想用Hexo搭建两个网站，就创建了两个Github账号，结果发现在本地提交更新的时候竟然一直失败。新创建的Github账号竟然总是使用之前的Github账号进行验证，导致提交总是报错，so找到了解决方法。<br><strong>我们使用SSH Key方式进行认证</strong></p>
+<p>原本想用Hexo搭建两个网站，就创建了两个Github账号，结果发现在本地提交更新的时候竟然一直失败。新创建的Github账号竟然总是使用之前的Github账号进行验证，导致提交总是报错，so找到了解决方法。</p>
 </blockquote>
-<h2 id="首先需要针对创建不同的SSH秘钥"><a href="#首先需要针对创建不同的SSH秘钥" class="headerlink" title="首先需要针对创建不同的SSH秘钥"></a>首先需要针对创建不同的SSH秘钥</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rs -C &quot;your_email@youremail.com&quot;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p><strong>我们使用SSH Key方式进行认证</strong></p>
+<h4 id="How-To-Do"><a href="#How-To-Do" class="headerlink" title="How To Do"></a>How To Do</h4><blockquote>
+<p>首先需要针对创建不同的SSH秘钥</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rs -C &quot;your_email@youremail.com&quot;</div></pre></td></tr></table></figure>
 <p>例如，我们生成如下两个SSH秘钥</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ~/.ssh/id_rsa_key1</div><div class="line">$ ~/.ssh/id_rsa_key2</div></pre></td></tr></table></figure>
 <p>我们可以把之前缓存过的SSH秘钥全部删掉</p>
@@ -16,11 +21,20 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ssh-add ~/.ssh/id_rsa_key1</div><div class="line">$ ssh-add ~/.ssh/id_rsa_key2</div></pre></td></tr></table></figure>
 <p>最后呢，我们检查一下我们保存的SSH秘钥</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-add -l</div></pre></td></tr></table></figure>
-<h2 id="将生成的SSH秘钥添加到Github账号中"><a href="#将生成的SSH秘钥添加到Github账号中" class="headerlink" title="将生成的SSH秘钥添加到Github账号中"></a>将生成的SSH秘钥添加到Github账号中</h2><p>登录Github账号，进入<a href="https://github.com/settings/ssh" target="_blank" rel="external">https://github.com/settings/ssh</a><br>点击New SSH key，将新生成的.pub秘钥粘贴到输入框保存</p>
-<h2 id="修改SSH的config文件"><a href="#修改SSH的config文件" class="headerlink" title="修改SSH的config文件"></a>修改SSH的config文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ cd ~/.ssh/</div><div class="line">$ touch config</div><div class="line">$ vim config</div></pre></td></tr></table></figure>
+<blockquote>
+<p>将生成的SSH秘钥添加到Github账号中</p>
+</blockquote>
+<p>登录Github账号，进入<a href="https://github.com/settings/ssh" target="_blank" rel="external">https://github.com/settings/ssh</a><br>点击New SSH key，将新生成的.pub秘钥粘贴到输入框保存</p>
+<blockquote>
+<p>修改SSH的config文件</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ cd ~/.ssh/</div><div class="line">$ touch config</div><div class="line">$ vim config</div></pre></td></tr></table></figure>
 <p>然后对config进行配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#key1 account</div><div class="line">Host github.com-key1</div><div class="line">	HostName github.com</div><div class="line">	User git</div><div class="line">	IdentityFile ~/.ssh/id_rsa_key1</div><div class="line"></div><div class="line">#key2 account</div><div class="line">Host github.com-key2</div><div class="line">	HostName github.com</div><div class="line">	User git</div><div class="line">	IdentityFile ~/.ssh/id_rsa_key2</div></pre></td></tr></table></figure>
-<h2 id="最后clone远端仓库到本地"><a href="#最后clone远端仓库到本地" class="headerlink" title="最后clone远端仓库到本地"></a>最后clone远端仓库到本地</h2><p>clone远端仓库我们需要使用SSH key的方式</p>
+<blockquote>
+<p>最后clone远端仓库到本地</p>
+</blockquote>
+<p>clone远端仓库我们需要使用SSH key的方式</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone git@github.com:xxx/github-multi-account.git</div></pre></td></tr></table></figure>
 <p>在后续的Github账户所属的仓库下，执行以下命令</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config user.name [sub_account.user_name]</div><div class="line">$ git config user.email [sub_account.email]</div></pre></td></tr></table></figure>
