@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> GitHooks如何构建代码检查的工作流 · HY</title><meta name="description" content="GitHooks如何构建代码检查的工作流 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">GitHooks如何构建代码检查的工作流</h1><div class="post-info">2018年3月2日</div><div class="post-content"><blockquote>
+<p>GitHooks在构建项目工作流时非常有用，也非常灵活。这里呢，我想分享一下GitHooks在代码规范检查工作流中应用。在团队协作开发时，代码规范化非常重要，我希望在工作流中，能在代码提交前自动进行代码规范检查，只有代码规范检查通过，代码才能完成提交。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Git自带Hooks配置文件"><a href="#Git自带Hooks配置文件" class="headerlink" title="Git自带Hooks配置文件"></a>Git自带Hooks配置文件</h2><p>Git工具自带有GitHooks工具，我们可以在项目中的<code>.git/hooks</code>目录下找到配置文件，如下图<br><img src="http://ww1.sinaimg.cn/large/a1823812gy1foyim6j65nj20km01kjrd.jpg" alt=""></p>
+<p>可以看到<code>.sample</code>后缀的各种hooks样例，需要使用哪个hook，只需要去掉<code>.sample</code>后缀，编辑对应的脚本文件就可。</p>
+<h2 id="如何更简单配置呢"><a href="#如何更简单配置呢" class="headerlink" title="如何更简单配置呢"></a>如何更简单配置呢</h2><p><strong>Node环境</strong></p>
+<p>前端工作流配置中可以使用npm提供的husky包，只需简单配置就可以使用hooks。</p>
+<p>安装husky，这里使用的是next版本，stable版本使用时，脚本未生效，原因暂不明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install husky@next --save-dev</div></pre></td></tr></table></figure>
+<p>在<code>package.json</code>文件中进行配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// package.json</div><div class="line">&#123;</div><div class="line">  &quot;husky&quot;: &#123;</div><div class="line">    &quot;hooks&quot;: &#123;</div><div class="line">      &quot;pre-commit&quot;: &quot;npm lint&quot;,</div><div class="line">      &quot;...&quot;: &quot;...&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置完成在每次执行 <code>git commit</code> 前，会先执行对应的脚本。这里只需要配置jslint相关命令，就可完成lint检测，如果不通过，会停止 <code>git commit</code> 操作。</p>
+<p>这样我们前端的自动化工作流程就配置完毕了，很简单哦。</p>
+<p><strong>Python环境</strong></p>
+<p>Python环境中有相当多的和hooks相关的库文件，这里呢，我选择了<a href="https://pre-commit.com/" target="_blank" rel="external">pre-commit</a>来配置Python环境中的自动化工作流。pre-commit配置起来也相当简单，它提供了一系列的hooks供我们使用，<a href="https://pre-commit.com/hooks.html" target="_blank" rel="external">参看</a>。</p>
+<p>配置时，只需要指定你想要的hooks，pre-commit将会安装并执行相应的hooks在每次 <code>git commit</code> 之前。即使你没有安装node环境，但是修改了js文件并执行js文件代码加测，pre-commit会自动下载并安装node环境来执行jslint检测，并且不需要拥有root权限。</p>
+<p>安装pre-commit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install pre-commit</div></pre></td></tr></table></figure>
+<p>安装完成后，在项目中添加配置文件.pre-commit-comfig.yaml，添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">-   repo: git://github.com/pre-commit/mirrors-pylint</div><div class="line">    sha: &apos;v1.8.2&apos;  # Use the sha / tag you want to point at</div><div class="line">    hooks:</div><div class="line">    -   id: pylint</div><div class="line">        name: pylint</div><div class="line">        entry: pylint</div><div class="line">        language: python</div><div class="line">        files: \.py$</div><div class="line">        args: []</div></pre></td></tr></table></figure>
+<p>这里我们配置了pylint工作流，在 <code>git commit</code> 命令执行前进行Python代码规范检查。</p>
+<p>配置完成后，运行 <code>pre-commit install</code> 将会在git hooks中添加pre-commit，项目中的 .git/hooks 目录下会多一个pre-commit文件，这样我们的配置就完成了。</p>
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+    margin-top:120px;
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2017/08/01/github-multi-account/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
