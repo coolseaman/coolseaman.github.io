@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 使用webhook配置自动化部署工作流 · HY</title><meta name="description" content="使用webhook配置自动化部署工作流 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">使用webhook配置自动化部署工作流</h1><div class="post-info">2018年3月22日</div><div class="post-content"><blockquote>
+<p>前端开发过程中，我们经常需要提供一个及时更新的浏览环境，已方便项目经理实时跟踪项目开发进度，以及对项目开发问题及时反馈。如果我们手动部署环境，没更新一次代码都需要执行相同的部署操作，如何让一切自动化起来，下面就是我实践总结的方案。</p>
+</blockquote>
+<h2 id="方案介绍"><a href="#方案介绍" class="headerlink" title="方案介绍"></a>方案介绍</h2><p>我一直使用gitlab作为代码管理工具，每次提交都从自己fork出的仓库向主仓库发送merge请求，每次merge请求接收后，主仓库代码更新，都会通过webhook向指定服务地址发送请求，指定的服务收到请求，会执行相应的脚本，来完成项目的更新部署。</p>
+<h2 id="如何实现呢？"><a href="#如何实现呢？" class="headerlink" title="如何实现呢？"></a>如何实现呢？</h2><h3 id="写一个监听webhook请求的服务"><a href="#写一个监听webhook请求的服务" class="headerlink" title="写一个监听webhook请求的服务"></a>写一个监听webhook请求的服务</h3><p>我选择在部署代码的服务器上写监听webhook请求的服务。<strong>选用NodeJS</strong>。</p>
+<p>先创建一个 <code>webhook</code> 目录，执行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ npm init</div><div class="line">$ npm install --save node-gitlab-webhook</div><div class="line">``` </div><div class="line">这里使用了 `node-gitlab-webhook` 包，用来解析webhook请求。</div><div class="line"></div><div class="line">创建一个 `service.js` 文件，内容如下：</div></pre></td></tr></table></figure>
+<p>var http = require(‘http’)<br>var createHandler = require(‘node-gitlab-webhook’)<br>var handler = createHandler({ path: ‘/webhook’, secret: ‘secret1’})</p>
+<p>// 用来执行脚本文件<br>function exec_command(cmd, args, callback) {<br>    var spawn = require(‘child_process’).spawn;<br>    var child = spawn(cmd, args);<br>    var resp = “”;</p>
+<pre><code>child.stdout.on(&apos;data&apos;, function (buffer) { resp += buffer.toString(); });
+child.stdout.on(&apos;end&apos;, function () { callback(resp) });
+</code></pre><p>}</p>
+<p>// 服务端口号为6687<br>http.createServer(function(req, res) {<br>    handler(req, res, function(err) {<br>        res.statusCode = 404<br>        res.end(‘no such location’)<br>    })<br>}).listen(6687)</p>
+<p>handler.on(‘error’, function(err) {<br>    console.error(‘Error:’, err.message)<br>})</p>
+<p>// 这里监听merge请求<br>handler.on(‘merge_request’, function(event) {<br>    console.log(‘Received a merge event for %s to %s’,<br>        event.payload.repository.name,<br>        event.payload.ref<br>    )</p>
+<pre><code>// 执行同目录下的脚本文件
+exec_command(&apos;sh&apos;, [&apos;./deploy-pub.sh&apos;], function (text) { console.log(text) });
+</code></pre><p>})<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">接下来需要开启服务，这里使用pm2作为进程管理工具，执行以下命令开启服务：</div></pre></td></tr></table></figure></p>
+<p>$ pm2 start service.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">可通过 `pm2 list` 查看服务进程状态。</div><div class="line"></div><div class="line">### gitlab页面配置webhook</div><div class="line"></div><div class="line">登录 gitlab 的 weebhook 配置界面，如下图：</div><div class="line">![](http://ww1.sinaimg.cn/large/a1823812gy1fplmq0ted1j211t0piq6x.jpg)</div><div class="line"></div><div class="line">创建指定类型的webhook，配置服务地址，可以点击测试按钮，如果成功，会返回200状态码。</div><div class="line"></div><div class="line">### 服务器端脚本编写</div><div class="line"></div><div class="line">脚本需要在收到webhook请求后执行，主要目的是拉去远端仓库最新代码，并完成编译部署。</div><div class="line"></div><div class="line">代码内容如下：</div></pre></td></tr></table></figure></p>
+<p>REPO_DIR=/root/Repository/repo<br>DYSERVER_DIR=/var/www/html/dyserver</p>
+<p>cd $REPO_DIR</p>
+<h1 id="Reset-current-HEAD-to-the-specified-state"><a href="#Reset-current-HEAD-to-the-specified-state" class="headerlink" title="Reset current HEAD to the specified state."></a>Reset current HEAD to the specified state.</h1><p>git reset –hard origin/dev</p>
+<h1 id="Remove-untracked-files-from-the-working-tree"><a href="#Remove-untracked-files-from-the-working-tree" class="headerlink" title="Remove untracked files from the working tree."></a>Remove untracked files from the working tree.</h1><p>git  clean -f</p>
+<h1 id="拉取远端代码"><a href="#拉取远端代码" class="headerlink" title="拉取远端代码"></a>拉取远端代码</h1><p>git pull origin dev</p>
+<p>cd ./DyServer/static</p>
+<h1 id="进行编译"><a href="#进行编译" class="headerlink" title="进行编译"></a>进行编译</h1><p>gulp build</p>
+<h1 id="编译后代码放到访问目录下"><a href="#编译后代码放到访问目录下" class="headerlink" title="编译后代码放到访问目录下"></a>编译后代码放到访问目录下</h1><p>mv ./dist/* $DYSERVER_DIR<br>```<br>然后可以通过执行脚本测试脚本是否执行成功。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><ul>
+<li>公网上的服务器防火墙对开放端口进行了限制，所以创建新的服务需要对防火墙进行端口配置，可以参看<a href="https://www.cnblogs.com/wucg/p/6143204.html" target="_blank" rel="external">链接</a>。</li>
+<li>公共服务器上最好使用ssh方式拉去代码，使用http方式会泄露本地保存的个人账户信息。</li>
+</ul>
+<p>自动化工作流还可以进行更多功能的拓展。</p>
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+    margin-top:120px;
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2018/03/02/pre-commit/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
