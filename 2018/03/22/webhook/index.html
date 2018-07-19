@@ -10,7 +10,7 @@
 <a id="more"></a>
 <h4 id="方案介绍"><a href="#方案介绍" class="headerlink" title="方案介绍"></a>方案介绍</h4><p>我一直使用gitlab作为代码管理工具，每次提交都从自己fork出的仓库向主仓库发送merge请求，每次merge请求接收后，主仓库代码更新，都会通过webhook向指定服务地址发送请求，指定的服务收到请求，会执行相应的脚本，来完成项目的更新部署。</p>
 <h4 id="如何实现呢？"><a href="#如何实现呢？" class="headerlink" title="如何实现呢？"></a>如何实现呢？</h4><p><strong>写一个监听webhook请求的服务</strong></p>
-<p>我选择在部署代码的服务器上写监听webhook请求的服务。<strong>选用NodeJS</strong>。</p>
+<p>我选择在部署代码的服务器上写监听webhook请求的服务。<em>选用NodeJS</em>。</p>
 <p>先创建一个 <code>webhook</code> 目录，执行如下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm init</div><div class="line">$ npm install --save node-gitlab-webhook</div></pre></td></tr></table></figure>
 <p>这里使用了 <code>node-gitlab-webhook</code> 包，用来解析webhook请求。</p>
