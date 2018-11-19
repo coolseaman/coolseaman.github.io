@@ -4,6 +4,66 @@
     var s = document.getElementsByTagName("script")[0]; 
     s.parentNode.insertBefore(hm, s);
 })();
-</script><title> python_basics · HY</title><meta name="description" content="python_basics - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">python_basics</h1><div class="post-info">2018年11月16日</div><div class="post-content"></div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+</script><title> Python基础小结 · HY</title><meta name="description" content="Python基础小结 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python基础小结</h1><div class="post-info">2018年11月16日</div><div class="post-content"><blockquote>
+<p>最近看了《Python编程：从入门到实践》一书，强烈推荐作为Python的入门书籍，非常清晰易懂。之前已经有了Python开发的经验，所以就把书里关于Python的新发现总结一下。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="在列表中添加元素"><a href="#在列表中添加元素" class="headerlink" title="在列表中添加元素"></a>在列表中添加元素</h4><ul>
+<li><p>append()<br>  列表最后追加元素。</p>
+</li>
+<li><p>insert()<br>  在列表的任何位置添加新元素。需要指定新元素的索引和值。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">motorcycles = [&apos;honda&apos;, &apos;yamaha&apos;, &apos;suzuki&apos;]</div><div class="line">motorcycles.insert(0, &apos;ducati&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="在列表中删除元素"><a href="#在列表中删除元素" class="headerlink" title="在列表中删除元素"></a>在列表中删除元素</h4><ul>
+<li><p>del<br>  如果知道要删除元素在列表中的位置，可以使用del语句。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">motorcycles = [&apos;honda&apos;, &apos;yamaha&apos;, &apos;suzuki&apos;]</div><div class="line">del motorcycles[0]</div></pre></td></tr></table></figure>
+</li>
+<li><p>pop()<br>  pop()可删除列表末尾的元素，<strong>并可以让你使用该元素</strong>。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">motorcycles = [&apos;honda&apos;, &apos;yamaha&apos;, &apos;suzuki&apos;]</div><div class="line">popped_motorcycle = motorcycles.pop()</div></pre></td></tr></table></figure>
+<p>  pop()还可以删除列表中任何位置的元素，只需在括号中指定要删除元素的索引即可。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">motorcycles = [&apos;honda&apos;, &apos;yamaha&apos;, &apos;suzuki&apos;]</div><div class="line">motorcycles.pop(0)</div></pre></td></tr></table></figure>
+</li>
+<li><p>remove()<br>  当你只知道要删除元素的值，不知道要删除元素所处的位置时，可以使用remove()方法。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">motorcycles = [&apos;honda&apos;, &apos;yamaha&apos;, &apos;suzuki&apos;]</div><div class="line">motorcycles.remove(&apos;ducati&apos;)</div></pre></td></tr></table></figure>
+<p>  <strong>注意：remove()方法只能删除第一个指定的值，如果要删除的值在列表中出现多次，就需要使用循环判断是否删除所有这样的值</strong></p>
+</li>
+</ul>
+<h4 id="列表排序"><a href="#列表排序" class="headerlink" title="列表排序"></a>列表排序</h4><ul>
+<li><p>sort()<br>  sort()方法会永久性地修改列表元素的排列顺序，默认按照字母顺序进行排序。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cars = [&apos;bmw&apos;, &apos;audi&apos;, &apos;toyota&apos;, &apos;subaru&apos;]</div><div class="line">cars.sort()</div></pre></td></tr></table></figure>
+<p>  将列表按照字母顺序相反的顺序排序。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cars = [&apos;bmw&apos;, &apos;audi&apos;, &apos;toyota&apos;, &apos;subaru&apos;]</div><div class="line">cars.sort(reverse=True)</div></pre></td></tr></table></figure>
+</li>
+<li><p>sorted()<br>  要保留列表元素原来的排列顺序，同时以特定的顺序呈现它们，可以使用sorted()方法。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cars = [&apos;bmw&apos;, &apos;audi&apos;, &apos;toyota&apos;, &apos;subaru&apos;]</div><div class="line">sorted(cars)</div></pre></td></tr></table></figure>
+<p>  要按照字母顺序相反顺序显示列表时，可向sorted()函数传递参数reverse=True。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cars = [&apos;bmw&apos;, &apos;audi&apos;, &apos;toyota&apos;, &apos;subaru&apos;]</div><div class="line">sorted(cars, reverse=True)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>reverse()<br>  要反转列表元素的排列顺序，可使用方法reverse()。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cars = [&apos;bmw&apos;, &apos;audi&apos;, &apos;toyota&apos;, &apos;subaru&apos;]</div><div class="line">cars.reverse()</div></pre></td></tr></table></figure>
+<p>  <strong>注意：reverse()方法不是按照与字母顺序相反的顺序排列列表元素，只是反转列表元素的排列顺序。</strong><br>  方法reverse()会永久性地改变列表元素的排列顺序，但可以随时恢复原来的排列顺序，只需再调用一次reverse()即可。</p>
+</li>
+</ul>
+<h4 id="数值列表"><a href="#数值列表" class="headerlink" title="数值列表"></a>数值列表</h4><ul>
+<li><p>range()<br>  range()函数可以生成一系列数字。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">for value in range(1, 5):</div><div class="line">    print(value)</div></pre></td></tr></table></figure>
+<p>  输出：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td></tr></table></figure>
+<p>  函数range()从你指定的第一个值开始数，在到达你指定的第二个值后停止，所以输出不包含第二个值。<br>  使用range()函数可以指定步长，例如打印1~10内的含的偶数</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">even_numbers = list(range(2, 11, 2))</div></pre></td></tr></table></figure>
+<p>  用range()创建数字列表</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">numbers = list(range(1, 6))</div></pre></td></tr></table></figure>
+</li>
+<li><p>对数字列表执行简单统计计算</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]</div><div class="line">min(digits)</div><div class="line">max(digits)</div><div class="line">sum(digits)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>Python将不能修改的值称为不可变的，而不可变得列表被称为元组。元组使用圆括号来标识。</p>
+<h4 id="用户输入"><a href="#用户输入" class="headerlink" title="用户输入"></a>用户输入</h4><p>函数input()可以让程序暂停运行，等待用户输入一些文本，获取用户输入后，Python将其存储在一个变量中，以方便你使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">message = input(&quot;Tell me something, and I will repeat it back to you: &quot;)</div><div class="line">print(message)</div></pre></td></tr></table></figure>
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
 }</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2018/03/22/webhook/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
