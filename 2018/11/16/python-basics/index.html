@@ -86,9 +86,9 @@
 </li>
 <li><p>导入模块中所有函数<br>  使用星号（*）运算符可以让Python导入模块中的所有函数。</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from module_name import *</div><div class="line">fun1()</div><div class="line">fun2()</div></pre></td></tr></table></figure>
+<p>  星号将模块中的每个函数都复制到这个程序文件中，所以可以通过名称调用每个函数。然而，使用并非自己编写的大型模块时，最好不要采用这种导入方法：如果模块中有函数的名称与你项目中使用的名称相同，可能导致意想不到的结果。Python可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。</p>
 </li>
 </ul>
-<pre><code>星号将模块中的每个函数都复制到这个程序文件中，所以可以通过名称调用每个函数。然而，使用并非自己编写的大型模块时，最好不要采用这种导入方法：如果模块中有函数的名称与你项目中使用的名称相同，可能导致意想不到的结果。Python可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。
-</code></pre></div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
 }</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2018/11/26/front-end-module/" class="prev">PREV</a><a href="/2018/03/22/webhook/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
