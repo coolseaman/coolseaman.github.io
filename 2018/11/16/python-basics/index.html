@@ -70,6 +70,11 @@
 <h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>Python将不能修改的值称为不可变的，而不可变得列表被称为元组。元组使用圆括号来标识。</p>
 <h4 id="用户输入"><a href="#用户输入" class="headerlink" title="用户输入"></a>用户输入</h4><p>函数input()可以让程序暂停运行，等待用户输入一些文本，获取用户输入后，Python将其存储在一个变量中，以方便你使用。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">message = input(&quot;Tell me something, and I will repeat it back to you: &quot;)</div><div class="line">print(message)</div></pre></td></tr></table></figure>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><ul>
+<li><p>__init__(self，[args])方法<br>当创建类的实例时，Python都会自动运行此方法。self形参必不可少哦，还必须位于其他形参前面。</p>
+<p>  <strong>为什么必须包含形参self？</strong><br>  因为python创建实例时，将自动传入形参self，每个与类相关联的方法调用都自动传递实参self，它是一个指向实例本身的引用，让实例能够访问类中的属性和方法。</p>
+</li>
+</ul>
 <h4 id="模块导入"><a href="#模块导入" class="headerlink" title="模块导入"></a>模块导入</h4><ul>
 <li><p>导入整个模块<br>  只需编写一条import语句并在其中指定模块名，就可以在程序中使用该模块的所有函数，可以使用下面的语法来使用其中的任何一个函数。</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">module_name.function_name()</div></pre></td></tr></table></figure>
@@ -88,7 +93,8 @@
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from module_name import *</div><div class="line">fun1()</div><div class="line">fun2()</div></pre></td></tr></table></figure>
 <p>  星号将模块中的每个函数都复制到这个程序文件中，所以可以通过名称调用每个函数。然而，使用并非自己编写的大型模块时，最好不要采用这种导入方法：如果模块中有函数的名称与你项目中使用的名称相同，可能导致意想不到的结果。Python可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。</p>
 </li>
+<li></li>
 </ul>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
-}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2018/11/26/front-end-module/" class="prev">上一篇</a><a href="/2018/03/22/webhook/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2018/11/26/front-end-module/" class="prev">PREV</a><a href="/2018/03/22/webhook/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2018 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
