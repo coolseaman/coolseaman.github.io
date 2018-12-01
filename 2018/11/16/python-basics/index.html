@@ -74,6 +74,12 @@
 <li><p>__init__(self，[args])方法<br>当创建类的实例时，Python都会自动运行此方法。self形参必不可少哦，还必须位于其他形参前面。</p>
 <p>  <strong>为什么必须包含形参self？</strong><br>  因为python创建实例时，将自动传入形参self，每个与类相关联的方法调用都自动传递实参self，它是一个指向实例本身的引用，让实例能够访问类中的属性和方法。</p>
 </li>
+<li><p>类的继承<br>这里的示例中，ElectricCar类继承了Car类的方法和属性：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">class Car():</div><div class="line">    def __init__(self, model, year):</div><div class="line">        self.model = model</div><div class="line">        self.year = year</div><div class="line"></div><div class="line">class ElectricCar(Car):</div><div class="line">    def __init__(self, model, year):</div><div class="line">        super().__init__(model, year)</div></pre></td></tr></table></figure>
+<p>  创建子类时，父类必须包含在当前文件中，且位于子类前面。<br>  <code>super()</code>是一个特殊函数，让子类和父类联系起来，这行代码会执行父类的<code>__init__()</code>方法，让子类包含父类的所有属性，父类也称超类，super由此而来。</p>
+</li>
+<li><p>重写父类方法<br>  对于父类的方法，只要它不符合子类的需要，都可以进行重写。可以在子类中定义一个这样的方法，让它与要重写的父类方法同名即可，Python将不关注父类中的方法，只关注子类中重写的方法。 </p>
+</li>
 </ul>
 <h4 id="模块导入"><a href="#模块导入" class="headerlink" title="模块导入"></a>模块导入</h4><ul>
 <li><p>导入整个模块<br>  只需编写一条import语句并在其中指定模块名，就可以在程序中使用该模块的所有函数，可以使用下面的语法来使用其中的任何一个函数。</p>
