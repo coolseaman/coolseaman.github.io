@@ -112,7 +112,15 @@
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">    with open(filename) as file_object:</div><div class="line">        lines = file_object.readlines()</div><div class="line">        </div><div class="line">    for line in lines:</div><div class="line">        print(line.rstrip())</div><div class="line">    ```    </div><div class="line">* 写入文件</div></pre></td></tr></table></figure>
 <p>  filename = ‘programming.txt’<br>  with open(filename, ‘w’) as file_object:</p>
 <pre><code>file_object.write(&quot;I love programming.\n&quot;)
-</code></pre><p>  <code>`</code><br>  第二个实参‘w’告诉Python，我们要以写入模式打开这个文件。打开文件时，可指定读取模式（’r’），写入模式（’w’），附件模式（’a’），或者能够读取和写入文件的模式（’r+’）。如果省略了模式实参，Python将以默认的只读模式打开文件。如果你要写入的文件不存在，函数open()将自动创建它。然后以写入模式打开文件时要小心，因为如果指定文件已存在，Python将在返回文件对象前清空该文件。</p>
+</code></pre>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">    第二个实参‘w’告诉Python，我们要以写入模式打开这个文件。打开文件时，可指定读取模式（&apos;r&apos;），写入模式（&apos;w&apos;），附件模式（&apos;a&apos;），或者能够读取和写入文件的模式（&apos;r+&apos;）。如果省略了模式实参，Python将以默认的只读模式打开文件。如果你要写入的文件不存在，函数open()将自动创建它。然后以写入模式打开文件时要小心，因为如果指定文件已存在，Python将在返回文件对象前清空该文件。</div><div class="line">    </div><div class="line">* 存储数据</div><div class="line">    有时关闭程序，也需要将数据进行存储。一种简单的方式是使用json来存储数据，模块json可以将Python数据结构转存到文件中，并在程序运行时加载文件中的数据。</div><div class="line">    `json.dump()`、`json.load()`用于进行json的数据存储和读取。</div></pre></td></tr></table></figure>
+<p>  import json</p>
+<p>  numbers = [1, 2, 3, 4]<br>  filename = ‘numbers.json’<br>  with open(filename, ‘w’) as f_obj:</p>
+<pre><code>json.dump(numbers, f_obj)
+</code></pre>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">函数`dump()`接受两个参数，要存储的数据以及用于存储数据的文件对象。</div></pre></td></tr></table></figure>
+<p>  import json</p>
+<p>  filename = numbers.json<br>  with open(filename) as f_obj:</p>
+<pre><code>numbers = json.load(f_obj)
+</code></pre><p>  print(numbers)<br>  <code>`</code></p>
 </li>
 </ul>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
