@@ -8,7 +8,7 @@
 <p>又重温了一遍RxJS的一些核心概念，做一个简单总结。</p>
 </blockquote>
 <a id="more"></a>
-<p>RxJS 是一个库，它通过使用 observable 序列来编写异步和基于事件的程序。它提供了一个核心类型 Observable，附属类型 (Observer、 Schedulers、 Subjects) 和受 [Array#extras] 启发的操作符 (map、filter、reduce、every, 等等)，这些数组操作符可以把异步事件作为集合来处理。</p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>RxJS 是一个库，它通过使用 observable 序列来编写异步和基于事件的程序。它提供了一个核心类型 Observable，附属类型 (Observer、 Schedulers、 Subjects) 和受 [Array#extras] 启发的操作符 (map、filter、reduce、every, 等等)，这些数组操作符可以把异步事件作为集合来处理。</p>
 <blockquote>
 <p>注：[Array#extras] 我的理解应该是Array的原生处理方法，类似lodash方法，所以，可以把 RxJS 当做是用来处理事件的 Lodash 。</p>
 </blockquote>
@@ -21,6 +21,27 @@
 <li>Subject (主体): 相当于 EventEmitter，并且是将值或事件多路推送给多个 Observer 的唯一方式。</li>
 <li>Schedulers (调度器): 用来控制并发并且是中央集权的调度员，允许我们在发生计算时进行协调，例如 setTimeout 或 requestAnimationFrame 或其他。</li>
 </ul>
+<h2 id="Observable-作为函数的泛化"><a href="#Observable-作为函数的泛化" class="headerlink" title="Observable 作为函数的泛化"></a>Observable 作为函数的泛化</h2><p>订阅 Observable 类似于调用函数。如果你不调用函数，函数就不会执行；如果你不订阅Observable，也同样不会执行。<br>Observable和函数的区别在于：Observable可以返回多个值，函数则无法做到。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function foo() &#123;</div><div class="line">  console.log(&apos;Hello&apos;);</div><div class="line">  return 42;</div><div class="line">  return 100; // 死代码，永远不会执行</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">var foo = Rx.Observable.create(function (observer) &#123;</div><div class="line">  console.log(&apos;Hello&apos;);</div><div class="line">  observer.next(42);</div><div class="line">  observer.next(100); // “返回”另外一个值</div><div class="line">  observer.next(200); // 还可以再“返回”值</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(&apos;before&apos;);</div><div class="line">foo.subscribe(function (x) &#123;</div><div class="line">  console.log(x);</div><div class="line">&#125;);</div><div class="line">console.log(&apos;after&apos;);</div><div class="line"></div><div class="line"># 输出</div><div class="line">&quot;before&quot;</div><div class="line">&quot;Hello&quot;</div><div class="line">42</div><div class="line">100</div><div class="line">200</div><div class="line">&quot;after&quot;</div></pre></td></tr></table></figure>
+<h2 id="Observable剖析"><a href="#Observable剖析" class="headerlink" title="Observable剖析"></a>Observable剖析</h2><p>Observable 的核心关注点：</p>
+<ul>
+<li>创建 Observables</li>
+<li>订阅 Observables</li>
+<li>执行 Observables</li>
+<li>清理 Observables</li>
+</ul>
+<h2 id="Observer观察者"><a href="#Observer观察者" class="headerlink" title="Observer观察者"></a>Observer观察者</h2><p>观察者是由 Observable 发送的值的消费者。观察者只是一组回调函数的集合，每个回调函数对应一种 Observable 发送的通知类型：<code>next</code>、<code>error</code> 和 <code>complete</code> 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var observer = &#123;</div><div class="line">  next: x =&gt; console.log(&apos;Observer got a next value: &apos; + x),</div><div class="line">  error: err =&gt; console.error(&apos;Observer got an error: &apos; + err),</div><div class="line">  complete: () =&gt; console.log(&apos;Observer got a complete notification&apos;),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>要使用观察者，需要把它提供给 Observable 的 subscribe 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">observable.subscribe(observer);</div></pre></td></tr></table></figure>
+<p>观察者只是有三个回调函数的对象，每个回调函数对应一种 Observable 发送的通知类型。</p>
+<p>RxJS 中的观察者也可能是部分的。如果你没有提供某个回调函数，Observable 的执行也会正常运行，只是某些通知类型会被忽略，因为观察者中没有相对应的回调函数。</p>
+<p>当订阅 Observable 时，你可能只提供了一个回调函数作为参数，而并没有将其附加到观察者对象上，例如这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">observable.subscribe(x =&gt; console.log(&apos;Observer got a next value: &apos; + x));</div></pre></td></tr></table></figure>
+<p>在 observable.subscribe 内部，它会创建一个观察者对象并使用第一个回调函数参数作为 next 的处理方法。三种类型的回调函数都可以直接作为参数来提供：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">observable.subscribe(</div><div class="line">  x =&gt; console.log(&apos;Observer got a next value: &apos; + x),</div><div class="line">  err =&gt; console.error(&apos;Observer got an error: &apos; + err),</div><div class="line">  () =&gt; console.log(&apos;Observer got a complete notification&apos;)</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<h2 id="Subject主体"><a href="#Subject主体" class="headerlink" title="Subject主体"></a>Subject主体</h2><p>Subject 是一种特殊类型的 Observable，它允许将值多播给多个观察者，所以 Subject 是多播的，而普通的 Observables 是单播的(每个已订阅的观察者都拥有 Observable 的独立执行)。</p>
+<p><strong>每个 Subject 都是 Observable 。</strong><br><strong>每个 Subject 都是观察者。</strong></p>
 <p>参考：<a href="https://cn.rx.js.org/manual/overview.html" target="_blank" rel="external">https://cn.rx.js.org/manual/overview.html</a></p>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
