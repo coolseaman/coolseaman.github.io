@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> rxjs-basic · HY</title><meta name="description" content="rxjs-basic - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">rxjs-basic</h1><div class="post-info">2019年2月15日</div><div class="post-content"><blockquote>
+<p>又重温了一遍RxJS的一些核心概念，做一个简单总结。</p>
+</blockquote>
+<a id="more"></a>
+<p>RxJS 是一个库，它通过使用 observable 序列来编写异步和基于事件的程序。它提供了一个核心类型 Observable，附属类型 (Observer、 Schedulers、 Subjects) 和受 [Array#extras] 启发的操作符 (map、filter、reduce、every, 等等)，这些数组操作符可以把异步事件作为集合来处理。</p>
+<p>在 RxJS 中用来解决异步事件管理的的基本概念是：</p>
+<ul>
+<li>Observable (可观察对象): 表示一个概念，这个概念是一个可调用的未来值或事件的集合。</li>
+<li>Observer (观察者): 一个回调函数的集合，它知道如何去监听由 Observable 提供的值。</li>
+<li>Subscription (订阅): 表示 Observable 的执行，主要用于取消 Observable 的执行。</li>
+<li>Operators (操作符): 采用函数式编程风格的纯函数 (pure function)，使用像 map、filter、concat、flatMap 等这样的操作符来处理集合。</li>
+<li>Subject (主体): 相当于 EventEmitter，并且是将值或事件多路推送给多个 Observer 的唯一方式。</li>
+<li>Schedulers (调度器): 用来控制并发并且是中央集权的调度员，允许我们在发生计算时进行协调，例如 setTimeout 或 requestAnimationFrame 或其他。</li>
+</ul>
+<p>参考：<a href="https://cn.rx.js.org/manual/overview.html" target="_blank" rel="external">https://cn.rx.js.org/manual/overview.html</a></p>
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+    margin-top:120px;
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/01/09/es6-Destructuring/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
