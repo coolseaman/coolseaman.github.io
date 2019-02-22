@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 基础算法 · HY</title><meta name="description" content="基础算法 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">基础算法</h1><div class="post-info">2019年2月22日</div><div class="post-content"><blockquote>
+<p>最近打算学习一些算法，这里先对一些基础算法只是进行重温，对算法的知识点进行一些总结，毕竟有文字输出效果会更好。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="概论"><a href="#概论" class="headerlink" title="概论"></a>概论</h2><h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><p>递归是一种非常优雅的解决问题的方式。它可以把复杂的问题逐步分解成简单的问题，逐步得到结果。<br>递归就是在函数中，满足递归条件，就调用函数自身，直到满足基线条件，递归返回。<br>每个递归函数都有两部分：</p>
+<ul>
+<li>基线条件：函数不再调用自己，避免形成无限循环。</li>
+<li>递归条件：函数调用自己。</li>
+</ul>
+<p><strong>栈</strong><br>栈是计算机中一种非常常见的数据结构，可以进行数据的压入（插入）和弹出（删除并读取）。</p>
+<p><strong>调用栈</strong><br>当函数调用时，计算机首先会为该函数调用分配一块内存，存储函数调用设计的所有变量值。当函数内部调用其他函数时，计算机就会为内部调用函数也分配一块内存，第二块内存位于第一块内存的上面，当函数调用返回，第二块内存就会从栈顶弹出。这就被称为调用栈。</p>
+<p><strong>递归调用栈</strong><br>递归调用栈中包含所有未完成的函数调用。在递归中，在最终返回结果前，每个函数都还未完成，所以栈中会存储每个调用函数的信息，每个函数调用都要占用一定的内存。所以如果栈很高，就会占用非常多的内存资源。解决方法如下：</p>
+<ul>
+<li>重新编写代码，使用循环。</li>
+<li>使用尾递归，这个貌似比较高级，待深究。</li>
+</ul>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>这里要用到一种分而治之的思想（divide and conquer, D&amp;C），即递归式问题解决方法。</p>
+<p><strong>D&amp;C原理</strong><br>D&amp;C的工作原理：</p>
+<ul>
+<li>找出简单的基线条件；</li>
+<li>确定如何缩小问题的规模，使其符合基线条件。</li>
+</ul>
+<p>这里有一个好玩的问题：</p>
+<blockquote>
+<p>假设你是一个农场主，有一块168*64的土地。<br>现在要你均匀分成正方形土地，且分的方块要尽可能大，你会怎样分？</p>
+</blockquote>
+<p>这里涉及到一个欧几里得算法的问题：又称辗转相除法，是指用于计算两个正整数a，b的最大公约数。<br>我们可以先从这块地中划出两个最大的方块，然后对剩下的一小块地再次划出最大的方块，就这样递归，直到没有剩下地块为止。这样我们就使用的递归的方式来解决问题。</p>
+</div></article><div id="uyan_frame"></div><style>div#uyan_frame{
+    margin-top:120px;
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/02/15/rxjs-basic/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
