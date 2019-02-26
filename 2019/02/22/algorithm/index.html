@@ -53,6 +53,37 @@
 <li>最糟情况：O(n) * O(n) = O(n2)</li>
 </ul>
 <p>最佳情况也是平均情况，只要每次都随机选择一个数组元素作为基准值，快速排序的平均运行时间将为O(n log n)。快速排序是最快的排序算法质疑，也是D&amp;C典范。</p>
+<h2 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h2><p>散列表我们非常熟悉，在Python中就是字典，在JavaScript中就是对象，等。每一种语言中都有自己对于散列表的实现。这里简单总结一下散列表的实现原理。</p>
+<p>散列表平均情况下的时间复杂度是个常量：O(1)</p>
+<p><strong>实现原理</strong>：<br>    将输入通过散列函数输出一个数组的索引，在数组的该索引位置上存储一个值，这样就可以快速得出我们想要的结果。</p>
+<p><strong>避免冲突</strong>：<br>不够理想的散列函数可能会将不同的键映射到数组的同一个位置，这样就需要在这个位置上存储一个链表，就会导致性能下降。</p>
+<p>要提升散列表的性能，需要：</p>
+<ul>
+<li>较低的装填因子；</li>
+<li>良好的散列函数。</li>
+</ul>
+<p>装填因子就是 <code>散列表包含的元素数/数组位置总数</code>。所以装填因子越小，冲突的可能性就越小，装填因子过大，我们可以调整数组长度，通常将数组增加一倍。一个不错的经验规则是：一旦装填因子大于0.7，就调整散列表的长度。</p>
+<p>良好的散列函数可以让数组中的值呈均匀分布。</p>
+<h2 id="广度优先搜索（宽度优先搜索）"><a href="#广度优先搜索（宽度优先搜索）" class="headerlink" title="广度优先搜索（宽度优先搜索）"></a>广度优先搜索（宽度优先搜索）</h2><p><strong>什么是图？</strong><br>图由节点和边组成，一个节点可能和众多节点相连接，这些节点称为邻居。</p>
+<p>广度优先搜索是一种用于图的查找算法，帮助回答两个问题：</p>
+<ul>
+<li>从节点A出发，有前往节点B的路径吗？</li>
+<li>从节点A出发，前往节点B的哪条路径最短？</li>
+</ul>
+<p>广度优先搜索的基本思路就是现在一级节点中搜索，如果找到目标，则完成，如果没有找到目标，继续在二级节点中搜索，依次是三级、四级…直到返回搜索结果。</p>
+<p>在检查的过程中要按照添加顺序进行，所以我们要用到队列。队列是一种先进先出（FIFO）的数据结构，而栈是一种后进先出（LIFO）的数据结构。</p>
+<p>关于图的代码实现，我们可以使用散列表来实现，例如下图：<br><img src="media/%E5%9B%BE.png" alt="图"></p>
+<p>我们可以用如下代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">graph = &#123;&#125; </div><div class="line">graph[&quot;you&quot;] = [&quot;alice&quot;, &quot;bob&quot;, &quot;claire&quot;] </div><div class="line">graph[&quot;bob&quot;] = [&quot;anuj&quot;, &quot;peggy&quot;] graph[&quot;alice&quot;] = [&quot;peggy&quot;] graph[&quot;claire&quot;] = [&quot;thom&quot;, &quot;jonny&quot;] </div><div class="line">graph[&quot;anuj&quot;] = [] </div><div class="line">graph[&quot;peggy&quot;] = [] </div><div class="line">graph[&quot;thom&quot;] = [] </div><div class="line">graph[&quot;jonny&quot;] = []</div></pre></td></tr></table></figure></p>
+<p>算法实现原理：<br><img src="media/%E5%8E%9F%E7%90%86.png" alt="原理"></p>
+<p>算法代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">from collections import deque</div><div class="line"></div><div class="line">def search(name):</div><div class="line">    search_queue = deque()</div><div class="line">    search_queue += graph[name]</div><div class="line">    searched = [] //用于记录检查过的人</div><div class="line">    </div><div class="line">    while search_queue:</div><div class="line">        person = search_queue.popleft()</div><div class="line">        if person not in searched:</div><div class="line">            if person_is_seller(person):</div><div class="line">                print person + &apos;is seller&apos;</div><div class="line">                return True</div><div class="line">            else: </div><div class="line">                search_queue += graph[person]</div><div class="line">        searched.append(person)</div><div class="line">        </div><div class="line">    return False</div><div class="line"></div><div class="line">def person_is_seller(name):</div><div class="line">    //随意定义一个判断函数</div><div class="line">    return name[-1] == &apos;m&apos;</div><div class="line">    </div><div class="line">search(&apos;you&apos;)</div></pre></td></tr></table></figure></p>
+<p><strong>小结</strong></p>
+<ul>
+<li>面对寻找最短路径的问题，可以先用图来建立模型，再使用广度优先搜索来解决问题。</li>
+<li>有向图中的边有箭头，箭头的方向指定了关系的方向。</li>
+<li>无向图中的边没有箭头，其中的关系是双向的。</li>
+<li>你需要按照加入顺序进行检查，否则找到的可能就不是最短路径，因此搜索列表必须是队列。</li>
+<li>对于检查过的人务必不要再去检查，否则可能导致无限循环，例如一个无向图。</li>
+</ul>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
 }</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/02/15/rxjs-basic/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
