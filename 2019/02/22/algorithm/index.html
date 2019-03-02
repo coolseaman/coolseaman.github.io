@@ -100,6 +100,30 @@
 <li>非加权图查找最短路径使用广度优先搜索；加权图中查找最短路径使用狄克斯特拉算法；</li>
 <li>仅当权重为正时，狄克斯特拉算法才管用；图中含负权边时，使用贝尔曼-福德算法。</li>
 </ul>
+<h2 id="贪婪算法"><a href="#贪婪算法" class="headerlink" title="贪婪算法"></a>贪婪算法</h2><p>贪婪算法是指，在对问题求解时，总是做出在当前看来是最好的选择。就是说，你每步都选择局部最优解，不从整体最优上加以考虑。贪婪算法不能得出最优解，但非常接近最优解。</p>
+<p><strong>集合覆盖问题</strong><br>举个例子：<br>你要办一个广播节目，让全美50个州都能收听得到。为此，你需要决定在哪些广播台播出。每个广播台都需要支付费用，因此你力图在尽可能少的广播台播出。</p>
+<p>算法：</p>
+<ol>
+<li>选出这样一个广播台，即它覆盖了最多的未覆盖州。即使已覆盖一些州，也没关系；</li>
+<li>重复上一步，知道覆盖了所有州。</li>
+</ol>
+<p>这就是一种近似算法，因为获得精确解需要的时间太长。判断近似算法优劣的标准如下：</p>
+<ul>
+<li>速度有多快；</li>
+<li>得到的近似解与最优解的接近程度。</li>
+</ul>
+<p><strong>代码实现</strong><br>出于简化考虑，智力要覆盖州、广播台没有那么多。</p>
+<p>构建原始数据结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// 创建一个集合，包含要覆盖的州</div><div class="line">states_needed = set([&apos;mt&apos;, &apos;wa&apos;, &apos;or&apos;, &apos;id&apos;, &apos;nv&apos;]) </div><div class="line"></div><div class="line">// 键为广播站名，值为广播站覆盖的州</div><div class="line">stations = &#123;&#125;</div><div class="line">stations[&apos;kone&apos;] = set([&apos;id&apos;, &apos;nv&apos;])</div><div class="line">stations[&apos;ktwo&apos;] = set([&apos;wa&apos;, &apos;id&apos;, &apos;mt&apos;])</div><div class="line">stations[&apos;kthree&apos;] = set([&apos;or&apos;, &apos;nv&apos;])</div><div class="line">stations[&apos;kfour&apos;] = set([&apos;nv&apos;])</div><div class="line"></div><div class="line">// 存储最终选择的广播台</div><div class="line">final_stations = set()</div></pre></td></tr></table></figure></p>
+<p>逻辑代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">while states_needed: // 只要需要覆盖的州不为空，一直循环</div><div class="line"></div><div class="line">   // 每一次循环都是通过遍历所有广播台，找出覆盖剩余需要覆盖州最多的电台</div><div class="line">    best_station = None // 覆盖州最多的广播台</div><div class="line">    states_covered = set()  // 覆盖州的集合</div><div class="line">    </div><div class="line">    for station, states in stations.items():    // 遍历所有广播台</div><div class="line">        covered = states_needed &amp; states    //  当前广播台覆盖州和需要覆盖州的交集</div><div class="line">        if len(covered) &gt; len(states_covered): // 判断当前广播台覆盖的州是否是最多的</div><div class="line">            states_covered = covered    </div><div class="line">            best_station = station</div><div class="line">    </div><div class="line">    states_needed -= states_covered // 需要覆盖州与当前广播台所覆盖的州取差集</div><div class="line">    final_stations.add(best_station)    // 添加当前广播台</div></pre></td></tr></table></figure></p>
+<p><strong>NP完全问题</strong><br>NP完全问题定义为，以难解著称的问题，根本不可能编写出可快速解决这些问题的算法。</p>
+<p>例如，要找出A、B两点之间的最短路径是很容易得出，但如果要找出指定几个点的最短路径，就是商旅问题，这就是一个NP完全问题。<br>一般判断一个问题是否为NP问题依据：</p>
+<ul>
+<li>元素较少时算法运算速度非常快，但随着元素数量的增加，速度会变得非常慢；</li>
+<li>涉及“所有组合”的问题通常是NP完全问题；</li>
+<li>不能将问题分成小问题，必须考虑各种可能的情况；</li>
+<li>问题涉及序列且难以解决，如商旅问题；</li>
+<li>问题涉及集合且难以解决，如广播台集合。</li>
+</ul>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
-}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/02/15/rxjs-basic/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
+}</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/02/15/rxjs-basic/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
