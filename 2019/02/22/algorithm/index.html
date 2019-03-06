@@ -143,7 +143,33 @@
 <blockquote>
 <p>另外，还有B树、红黑树、堆、伸展树。</p>
 </blockquote>
-<p><strong>反向索引</strong> </p>
+<p><strong>反向索引</strong></p>
+<p>主要用于搜索引擎， 通过构建一个散列表，键值为关键词，值为关键词对应的页面，将单词映射到包含它的页面。</p>
+<p><strong>傅里叶变换</strong></p>
+<p><strong>并行算法</strong></p>
+<p>用于改善性能和拓展性。</p>
+<p><strong>MapReduce</strong></p>
+<p>一种流行的分布式算法，可以通过开元工具Apache Hadoop来使用它。当需要几个内核时，可以使用并行算法，但当需要使用上百个内核时，就需要在多态计算机上运行。<br>基于两个简单的理念：映射（map）函数和归并（reduce）函数。</p>
+<p><strong>布隆过滤器和HyperLogLog</strong></p>
+<p>这两种算法都属于概率性算法，不能保证结果百分百准确，但八九不离十，对于海量数据非常有用，减少存储空间的占用。</p>
+<p><strong>SHA算法</strong></p>
+<p>安全散列算法（secure hash algorithm）函数。给定一个字符串，SHA返回其散列值。</p>
+<p>可以根据生成的散列值，对判断两个文件是否相同。</p>
+<p>对密码进行加密。在存储用户密码时，之存储密码的SHA散列值，用户输入密码后，计算其SHA散列值，将结果通数据库中的散列值进行比较。这样即使密码泄露，也不会泄露原始密码。因为SHA算法是单向的，根据散列值无法推断出原始字符串。</p>
+<p><strong>局部敏感的散列算法</strong></p>
+<p>SHA算法的一个重要特征就是局部不敏感。如果你修改了字符串中的一个字符，计算的散列值截然不同。</p>
+<p>但一些情况下我们希望散列函数是局部敏感的，可以使用Simhash。对字符串做细微修改，生成的散列值只存在细微的差别，这样可以判断字符串的相似程度。</p>
+<p>场景：</p>
+<ul>
+<li>判断网页是否已搜索；</li>
+<li>论文查重。</li>
+</ul>
+<p><strong>Diffie-Hellman秘钥交换</strong></p>
+<p>就是我们熟知的公私钥加密算法，它的替代者RSA也一样广泛使用。</p>
+<p><strong>线性规划</strong></p>
+<blockquote>
+<p>结束语：<br>整篇文章主要是我对于《图解算法》这本书的阅读总结，后续会更深入地了解更多算法。</p>
+</blockquote>
 </div></article><div id="uyan_frame"></div><style>div#uyan_frame{
     margin-top:120px;
 }</style><script src="http://v2.uyan.cc/code/uyan.js?uid=2129331"></script></div></main><footer><div class="paginator"><a href="/2019/02/15/rxjs-basic/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2019 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
