@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 压力测试工具——ApacheBench · HY</title><meta name="description" content="压力测试工具——ApacheBench - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"><meta name="generator" content="Hexo 4.2.0"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">压力测试工具——ApacheBench</h1><div class="post-info">2020年7月16日</div><div class="post-content"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>ApacheBench简称ab，是Apache自带的一个压力测试工具，可以对网站进行访问压力测试，非常简单实用。ab是一个命令行工具，它可以模仿多个用户对网站的多并发访问，来测试目标服务器的负载能力。通过输出一些关键指标参数，帮助我们了解、提升服务器的负载能力。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><ul>
+<li>Linux环境<br>  在linux环境下的安装<code>yum install httpd-tools</code>。</li>
+<li><p>MacOS环境</p>
+<ul>
+<li>下载Apache Http Server;</li>
+<li>安装如下 <code>brew install apr</code> <code>brew install pcre</code>;</li>
+<li><p>进入到httpd目录下，执行</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>可以通过<code>ab -h</code>来查看ab的参数情况。<br>这里我们模仿50个用户同时访问一个本地服务，访问100次，执行以下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ab -c 50 -n 100 http:&#x2F;&#x2F;127.0.0.1:5500&#x2F;10-color&#x2F;cubehelix&#x2F;index.html</span><br></pre></td></tr></table></figure></p>
+<p>输出如下结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1843412 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http:&#x2F;&#x2F;www.zeustech.net&#x2F;</span><br><span class="line">Licensed to The Apache Software Foundation, http:&#x2F;&#x2F;www.apache.org&#x2F;</span><br><span class="line"></span><br><span class="line">Benchmarking 127.0.0.1 (be patient).....done</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Server Software:                    #服务器软件</span><br><span class="line">Server Hostname:        127.0.0.1   #服务器IP</span><br><span class="line">Server Port:            5500        # 服务器端口</span><br><span class="line"></span><br><span class="line">Document Path:          &#x2F;10-color&#x2F;cubehelix&#x2F;index.html  #文件路径</span><br><span class="line">Document Length:        1910 bytes      # 字面字节数</span><br><span class="line"></span><br><span class="line">Concurrency Level:      50              #请求的并发数</span><br><span class="line">Time taken for tests:   0.233 seconds   #访问的总耗时</span><br><span class="line">Complete requests:      100         #请求成功数</span><br><span class="line">Failed requests:        0           #请求失败数</span><br><span class="line">Total transferred:      223000 bytes    #请求的总数据大小（包含header头信息）</span><br><span class="line">HTML transferred:       191000 bytes    #页面实际总字节数</span><br><span class="line">Requests per second:    429.41 [#&#x2F;sec] (mean) #每秒请求数，反应了服务器的吞吐量，非常重要  </span><br><span class="line">Time per request:       116.439 [ms] (mean) #用户平均请求等待时间</span><br><span class="line">Time per request:       2.329 [ms] (mean, across all concurrent requests)   #服务器平均处理时间，也就是服务器吞吐量的倒数</span><br><span class="line">Transfer rate:          935.14 [Kbytes&#x2F;sec] received    #每秒获取数据长度</span><br><span class="line"></span><br><span class="line">Connection Times (ms)</span><br><span class="line">              min  mean[+&#x2F;-sd] median   max</span><br><span class="line">Connect:        0    1   0.5      1       2</span><br><span class="line">Processing:    38   84  37.0    120     123</span><br><span class="line">Waiting:       34   78  36.4    108     122</span><br><span class="line">Total:         40   86  37.0    122     123</span><br><span class="line"></span><br><span class="line">Percentage of the requests served within a certain time (ms)</span><br><span class="line">  50%    122        #50%用户请求在122ms内返回</span><br><span class="line">  66%    122        #66%用户请求在122ms内返回</span><br><span class="line">  75%    122        #75%用户请求在122ms内返回</span><br><span class="line">  80%    122        #80%用户请求在122ms内返回</span><br><span class="line">  90%    123        #90%用户请求在123ms内返回</span><br><span class="line">  95%    123        #95%用户请求在123ms内返回</span><br><span class="line">  98%    123        #98%用户请求在123ms内返回</span><br><span class="line">  99%    123        #99%用户请求在123ms内返回</span><br><span class="line"> 100%    123 (longest request)</span><br></pre></td></tr></table></figure>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>ab作为一种压力测试工具，可以帮助我们提升服务器的负载能力。在实际应用中，为了提升服务器的稳定性，我们还可以有更多的方法，例如对同一用户的多次请求进行降频，在我们用ab工具对百度搜索进行测试时，就发现这个现象。</p>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"66b3bec2ed166012b227","clientSecret":"aa06be78857099bba47974a90299ffa0607acea3","repo":"coolseaman/coolseaman.github.io","owner":"coolseaman","admin":["coolseaman"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2019/02/22/algorithm/" class="next">NEXT</a></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
+    //- clientID: '66b3bec2ed166012b227',
+    //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    //- repo: 'coolseaman/coolseaman.github.io',
+    //- owner: '',
+    //- admin: 'coolseaman',
+    //- id: window.location.pathname,      // Ensure uniqueness and length less than 50
+    //- distractionFreeMode: false  // Facebook-like distraction free mode
+
+    clientID: '66b3bec2ed166012b227',
+    clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    repo: 'coolseaman.github.io',
+    owner: 'coolseaman',
+    admin: ['coolseaman'],
+    id: window.location.pathname,
+    distractionFreeMode: false,
+    title: ''
+});
+gitalk.render('gitalk-container');</script><div class="copyright"><p>© 2015 - 2020 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
