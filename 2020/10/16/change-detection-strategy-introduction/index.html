@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> Angular变更检测策略：简介 · HY</title><meta name="description" content="Angular变更检测策略：简介 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"><meta name="generator" content="Hexo 4.2.0"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Angular变更检测策略：简介</h1><div class="post-info">2020年10月16日</div><div class="post-content"><blockquote>
+<p>Angular执行渲染和更新视图的方式是理解框架内部系统和基本功能的关键因素。让我们暂停几分钟，以更好地了解Angular的变更检测策略的工作方式。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="什么是“变更检测策略（Change-Detection）”-？"><a href="#什么是“变更检测策略（Change-Detection）”-？" class="headerlink" title="什么是“变更检测策略（Change Detection）” ？"></a>什么是“变更检测策略（Change Detection）” ？</h2><p>首先我们需要了解什么是变更检测策略？</p>
+<p>变更检测的基本机制是针对两种状态执行检查，一种是当前状态，另一种是新状态。如果一个状态与另一个状态不同，则说明已经变更，这意味着我们需要更新（或重新渲染）视图。</p>
+<blockquote>
+<p>变更检测意味着在数据变更后更新视图（DOM）。</p>
+</blockquote>
+<h3 id="变更检测分两步完成"><a href="#变更检测分两步完成" class="headerlink" title="变更检测分两步完成"></a>变更检测分两步完成</h3><p>Angular的变更检测分为两个步骤，第一个步骤是通过开发人员更新应用程序的模型来完成。他可以通过更改组件的属性或触发事件来做到这一点。然后，Angular的工作将是通过重新渲染来在视图中呈现模型的状态。通常，这意味着Angular将通过触发事件或着通过属性绑定来进行更新。</p>
+<ol>
+<li>更新应用程序的模型（开发者）</li>
+<li>在视图中呈现模型状态（Angular）</li>
+</ol>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>为了能够正确演示Angular的变更检测流程，我们需要举一个例子。在Angular中，每个应用程序都是将一堆组件与一些输入和输出组合在一起，以便能够传播数据和模型状态。应用程序基本上由我们所谓的组件树组成。<br><img src="media/16028611050008.jpg" alt="-w684"><br>如果我们使用上图所示的待办事项应用程序，那我们将有一个相当简单的应用程序，它具有一个TodosComponent来管理TodoComponent的列表。如果我们修改这个列表，则通过更改待办事项列表第一项的值（以黄色显示），我们将获得以下流程：</p>
+<ol>
+<li>开发者正在修改模型（例如组件的绑定属性）；</li>
+<li>Angular的变更检测开始传播变更；</li>
+<li>变更检测遍历组件树中的每个组件（从上到下），以检查它所依赖的模型是否已变更；</li>
+<li>如果已模型已变更，将会更新组件；</li>
+<li>Angular更新组件视图（DOM）。</li>
+</ol>
+<blockquote>
+<p>Angular通过从顶部开始一直持续到到达底部来进行变更检测的方式，使系统更具可预测性和性能。</p>
+</blockquote>
+<h2 id="Angular变更检测策略"><a href="#Angular变更检测策略" class="headerlink" title="Angular变更检测策略"></a>Angular变更检测策略</h2><p>Angular提供了两种变更检测策略，默认策略和OnPush策略。</p>
+<h3 id="ChangeDetectionStrategy-Default"><a href="#ChangeDetectionStrategy-Default" class="headerlink" title="ChangeDetectionStrategy.Default"></a>ChangeDetectionStrategy.Default</h3><p>为了知道是否应更新视图，Angular需要访问新值，将其与旧值进行比较，然后决定是否应更新视图。</p>
+<p>默认情况下，Angular不会假设组件依赖什么。因此，它必须是保守的，并且在每次可能发生更改时都会进行检查，这称为脏检查（dirty checking）。更具体点说，它将对每个浏览器事件，计时器，XHR和Promise执行检查。</p>
+<p>这可能会成为问题，当你开始开发一个包含许多组件的大型应用程序时，特别是如果你很关注性能。</p>
+<blockquote>
+<p>默认情况下，Angular必须保持保守，并且每当可能发生更改时都会进行检查，这称为脏检查。</p>
+</blockquote>
+<h3 id="ChangeDetectionStrategy-onPush"><a href="#ChangeDetectionStrategy-onPush" class="headerlink" title="ChangeDetectionStrategy.onPush"></a>ChangeDetectionStrategy.onPush</h3><p>在组件上使用onPush策略时，你会对Angular说，当需要执行变更检测时，它不应进行任何猜测。它仅依赖于Input引用的更改，一些由组件自身或子组件触发的事件。最后，你可以明确地要求Angular使用<code>componentRef.markForCheck()</code>方法执行此操作。</p>
+<p>使用onPush，该组件只依赖于<code>Input</code>，并且拥有不变性（embraces the immutability，应该就是说只依赖于Input引用的更新），变更检测策略将在以下情况下执行：</p>
+<ol>
+<li>Input 引用更新；</li>
+<li>由组件或其子组件触发的事件；</li>
+<li>明确执行变更检测<code>componentRef.markForCheck()</code>;</li>
+<li>在视图中使用<code>async</code>管道。</li>
+</ol>
+<blockquote>
+<p>使用onPush，Angular将仅依赖于组件的输入，事件，markForCheck方法或模板中异步管道的使用来执行变更检测机制并更新视图。</p>
+</blockquote>
+<p>这样可以大大提高性能，Angular不会做任何猜测或毫无用处的工作。它通过其组件使您的应用程序具有不变性。</p>
+<hr>
+<p><strong>原文出处</strong><br><a href="https://medium.com/@bencabanes/angular-change-detection-strategy-an-introduction-819aaa7204e7" target="_blank" rel="noopener">Angular Change Detection Strategy: An introduction
+</a></p>
+<p><strong>更深入学习</strong></p>
+<ol>
+<li><a href="https://blog.angularindepth.com/everything-you-need-to-know-about-change-detection-in-angular-8006c51d206f" target="_blank" rel="noopener">Everything you need to know about change detection in Angular</a></li>
+<li><a href="https://vsavkin.com/change-detection-in-angular-2-4f216b855d4c" target="_blank" rel="noopener">Change Detection in Angular</a></li>
+<li><a href="https://blog.nrwl.io/essential-angular-change-detection-fe0e868dcc00" target="_blank" rel="noopener">Essential Angular: Change Detection</a></li>
+<li><a href="https://netbasal.com/a-comprehensive-guide-to-angular-onpush-change-detection-strategy-5bac493074a4" target="_blank" rel="noopener">🚀 A Comprehensive Guide to Angular onPush Change Detection Strategy</a></li>
+</ol>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"66b3bec2ed166012b227","clientSecret":"aa06be78857099bba47974a90299ffa0607acea3","repo":"coolseaman/coolseaman.github.io","owner":"coolseaman","admin":["coolseaman"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/10/10/rxjs-operator/" class="next">NEXT</a></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
+    //- clientID: '66b3bec2ed166012b227',
+    //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    //- repo: 'coolseaman/coolseaman.github.io',
+    //- owner: '',
+    //- admin: 'coolseaman',
+    //- id: window.location.pathname,      // Ensure uniqueness and length less than 50
+    //- distractionFreeMode: false  // Facebook-like distraction free mode
+
+    clientID: '66b3bec2ed166012b227',
+    clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    repo: 'coolseaman.github.io',
+    owner: 'coolseaman',
+    admin: ['coolseaman'],
+    id: window.location.pathname,
+    distractionFreeMode: false,
+    title: ''
+});
+gitalk.render('gitalk-container');</script><div class="copyright"><p>© 2015 - 2020 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
