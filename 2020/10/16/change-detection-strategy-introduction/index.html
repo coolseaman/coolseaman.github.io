@@ -18,7 +18,7 @@
 <li>更新应用程序的模型（开发者）</li>
 <li>在视图中呈现模型状态（Angular）</li>
 </ol>
-<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>为了能够正确演示Angular的变更检测流程，我们需要举一个例子。在Angular中，每个应用程序都是将一堆组件与一些输入和输出组合在一起，以便能够传播数据和模型状态。应用程序基本上由我们所谓的组件树组成。<br><img src="http://ww1.sinaimg.cn/large/a1823812gy1gjrmdwl9njj21200k8760.jpg" alt="-w684"><br>如果我们使用上图所示的待办事项应用程序，那我们将有一个相当简单的应用程序，它具有一个TodosComponent来管理TodoComponent的列表。如果我们修改这个列表，则通过更改待办事项列表第一项的值（以黄色显示），我们将获得以下流程：</p>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>为了能够正确演示Angular的变更检测流程，我们需要举一个例子。在Angular中，每个应用程序都是将一堆组件与一些输入和输出组合在一起，以便能够传播数据和模型状态。应用程序基本上由我们所谓的组件树组成。<br><img src="http://ww1.sinaimg.cn/large/a1823812gy1gjrmdwl9njj21200k8760.jpg" alt="组件树"><br>如果我们使用上图所示的待办事项应用程序，那我们将有一个相当简单的应用程序，它具有一个TodosComponent来管理TodoComponent的列表。如果我们修改这个列表，则通过更改待办事项列表第一项的值（以黄色显示），我们将获得以下流程：</p>
 <ol>
 <li>开发者正在修改模型（例如组件的绑定属性）；</li>
 <li>Angular的变更检测开始传播变更；</li>
@@ -67,7 +67,7 @@
 	    gitalkConfig.id = md5(location.pathname);
 		var gitalk = new Gitalk(gitalkConfig);
 	    gitalk.render("gitalk-container");
-	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/10/10/rxjs-operator/" class="next">下一篇</a></div>
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/10/10/rxjs-operator/" class="next">NEXT</a></div>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
     //- clientID: '66b3bec2ed166012b227',
     //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
