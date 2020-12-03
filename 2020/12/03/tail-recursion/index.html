@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 非严格模式下的尾递归优化 · HY</title><meta name="description" content="非严格模式下的尾递归优化 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"><meta name="generator" content="Hexo 4.2.0"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">非严格模式下的尾递归优化</h1><div class="post-info">2020年12月3日</div><div class="post-content"><blockquote>
+<p>在ES6的严格模式下，支持尾递归的优化（目前只有Safari支持），那么在非严格模式下，我们如何自己实现尾递归的优化？</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="尾递归优化的原理"><a href="#尾递归优化的原理" class="headerlink" title="尾递归优化的原理"></a>尾递归优化的原理</h2><p>尾递归之所以需要优化，原因是调用栈太多，造成溢出，那么只要减少调用栈，就不会溢出。怎么做可以减少调用栈呢？就是采用“循环”换掉“递归”。</p>
+<h2 id="未优化代码案例"><a href="#未优化代码案例" class="headerlink" title="未优化代码案例"></a>未优化代码案例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function sum(x, y) &#123;</span><br><span class="line">    if (y &gt; 0) &#123;</span><br><span class="line">        return sum(x + 1, y - 1);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sum(1, 100000)</span><br></pre></td></tr></table></figure>
+<p>上面代码中，sum是递归函数，递归次数100000，将会提示超出调用栈的最大次数</p>
+<h2 id="蹦床函数（trampoline）"><a href="#蹦床函数（trampoline）" class="headerlink" title="蹦床函数（trampoline）"></a>蹦床函数（trampoline）</h2><p>蹦床函数可以将递归执行转为循环执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function trampoline(f) &#123;</span><br><span class="line">    while(f &amp;&amp; f instanceof Function) &#123;</span><br><span class="line">        f &#x3D; f();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面就是一个蹦床函数的实现，只要f执行后返回一个函数，就继续执行。<br><strong>注意：这里返回一个函数，然后执行该函数，而不是函数里面调用函数，这就避免了递归执行。</strong></p>
+<p>然后，要将原来的递归函数改写成每一步返回另一个函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function sum(x, y) &#123;</span><br><span class="line">    if (y &gt; 0) &#123;</span><br><span class="line">        &#x2F;&#x2F; bind()为了返回函数的另一个版本。</span><br><span class="line">        return sum.bind(null, x + 1, y - 1);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，使用蹦床函数执行sum，就不会发生调用栈溢出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trampoline(sum(1, 100000))</span><br></pre></td></tr></table></figure>
+<h2 id="真正的尾递归优化实现"><a href="#真正的尾递归优化实现" class="headerlink" title="真正的尾递归优化实现"></a>真正的尾递归优化实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">function tco(f) &#123;</span><br><span class="line">    var value;</span><br><span class="line">    var active &#x3D; false;</span><br><span class="line">    var accumulated &#x3D; [];</span><br><span class="line">    </span><br><span class="line">    return function accumulator() &#123;</span><br><span class="line">        accumulated.push(arguments);</span><br><span class="line">        if (!active) &#123;</span><br><span class="line">            active &#x3D; true;</span><br><span class="line">            while (accumulated.length) &#123;</span><br><span class="line">                &#x2F;&#x2F; 这里会一直循环调用f()</span><br><span class="line">                value &#x3D; f.apply(this, accumulated.shift());</span><br><span class="line">            &#125;</span><br><span class="line">            active &#x3D; false;</span><br><span class="line">            return value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var sum &#x3D; tco(function(x, y) &#123;</span><br><span class="line">    if (y &gt; 0) &#123;</span><br><span class="line">        return sum(x + 1, y - 1);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sum(1, 100000);</span><br></pre></td></tr></table></figure>
+<p>上面代码中，tco函数时尾递归优化的实现。<br><code>f.apply(this, accumulated.shift())</code> 会一直循环调用 <code>accumulator()</code>，直到有value返回。<br>后一轮的参数会取代前一轮的参数，保证了调用栈只有一层。</p>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"66b3bec2ed166012b227","clientSecret":"aa06be78857099bba47974a90299ffa0607acea3","repo":"coolseaman/coolseaman.github.io","owner":"coolseaman","admin":["coolseaman"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/10/16/change-detection-strategy-introduction/" class="next">NEXT</a></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
+    //- clientID: '66b3bec2ed166012b227',
+    //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    //- repo: 'coolseaman/coolseaman.github.io',
+    //- owner: '',
+    //- admin: 'coolseaman',
+    //- id: window.location.pathname,      // Ensure uniqueness and length less than 50
+    //- distractionFreeMode: false  // Facebook-like distraction free mode
+
+    clientID: '66b3bec2ed166012b227',
+    clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    repo: 'coolseaman.github.io',
+    owner: 'coolseaman',
+    admin: ['coolseaman'],
+    id: window.location.pathname,
+    distractionFreeMode: false,
+    title: ''
+});
+gitalk.render('gitalk-container');</script><div class="copyright"><p>© 2015 - 2020 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
