@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 浏览器缓存策略 · HY</title><meta name="description" content="浏览器缓存策略 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"><meta name="generator" content="Hexo 4.2.0"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">浏览器缓存策略</h1><div class="post-info">2020年12月10日</div><div class="post-content"><blockquote>
+<p>总结一下浏览器缓存策略：强缓存和协商缓存。<br>优先级较高的是强缓存，当强缓存失效的情况下，才会走协商缓存。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h1><ul>
+<li><p>特点</p>
+<ul>
+<li>不会向服务端发送网络请求，直接从缓存中读取资源</li>
+<li>请求返回200状态码</li>
+<li>在devTool中可以看到size显示from disk cache 或 from memory cache</li>
+</ul>
+</li>
+<li><p>设置方法<br>  通过两种HTTP Header 实现：</p>
+<ul>
+<li>Expires    </li>
+<li><p>Cache-Control</p>
+<p>Cache-Control优先级高于Expires</p>
+<p><strong>Expires</strong><br>通过指定资源到期时间：</p>
+</li>
+<li>这个时间之前无需发起网络请求，直接使用缓存资源；</li>
+<li><p>这个时间之后失效，需要重新发起网络请求获取。</p>
+<p>缺点：受限制于本地时间，可以通过修改本地时间致其失效</p>
+<p><strong>Cache-Control</strong><br>可以在请求头或响应头中设置，可以组合使用多种指令：</p>
+</li>
+<li>public：相应可以被服务端或客户端缓存</li>
+<li>private：默认值。响应只可以被客户端缓存</li>
+<li>max-age=30：缓存30s后过期，需要重新请求</li>
+<li>s-maxage=30：覆盖max-age，作用一致，代理服务器才生效</li>
+<li>no-store：不缓存任何响应</li>
+<li>no-cache：资源能被缓存，但立即失效</li>
+<li>max-stale=30：30s内，即使缓存过期也使用该缓存</li>
+<li>min-fresh=30：希望30s内获取最新响应</li>
+</ul>
+</li>
+</ul>
+<h1 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h1><p>协商缓存就是强缓存失效后，浏览器携带资源的缓存标识向服务端发起请求，有服务器根据缓存标识决定是否继续使用缓存的过程。<br>当浏览器发起请求验证资源时，如果资源没有改变，那么服务端就返回304状态码，并且更新浏览器现有缓存的有效期。</p>
+<p>协商缓存可以通过设置两种HTTP Header实现：</p>
+<ul>
+<li>Last-Modified</li>
+<li>ETag</li>
+</ul>
+<p><strong>Last-Modified</strong></p>
+<p>浏览器发起请求访问目标资源，服务器在返回资源的同时，会在response header中添加Last-Modified这个header，<br>标识这个资源在服务器上的最后修改时间。</p>
+<p>浏览器下次请求这个资源，浏览器检测到有Last-Modified这个header，于是会添加If-Modified-Since这个header，其值就是Last-Modified中的值。</p>
+<p>服务器收到请求后，根据If-Modified-since中的值与这个资源的最后修改时间作对比</p>
+<ul>
+<li>若服务器的资源最后修改时间不等于If-Modified-Since中的值，就会将新的资源发送回来</li>
+<li>否则，返回304状态码</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>如果修改本地缓存文件，会造成Last-Modified被修改，服务端不能命中缓存导致发送相同资源。</li>
+<li>Last-Modified只能以秒计时，如果在不可感知的时间内修改完成文件，那么服务端会认为资源还是命中了，不会正确返回资源。</li>
+</ul>
+<p>因为这些缺点，所以在HTTP/1.1 出现了ETag</p>
+<p><strong>ETag</strong></p>
+<p>ETag是服务器在响应请求时，返回的当前资源的一个唯一标识（服务器生成），只要资源内容有变化，ETag就会重新生成。</p>
+<p>浏览器在向服务器发送请求时，会将上一次请求返回的ETag值放到请求头的If-None-Match字段里面</p>
+<p>服务器会比较If-None-Match中的值跟目标资源的ETag是否一致：</p>
+<ul>
+<li>一致，响应状态码304</li>
+<li>不一致，响应状态码200，返回新资源</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>ETag优先级比Last-Modified高</li>
+<li>ETag是服务器通过算法计算得出，需要消耗一定时间</li>
+</ul>
+<p>两者对比：</p>
+<ul>
+<li>ETag/If-None-Match优先级高于Last-Modified/If-Modified-Since。<ul>
+<li>即同时存在，ETag/If-None-Match生效</li>
+</ul>
+</li>
+<li>性能上，Last-Modified要由于ETag。<ul>
+<li>Last-Modified只需要记录时间；</li>
+<li>ETag需要服务器通过算法计算一个hash值</li>
+</ul>
+</li>
+<li>在精度上，ETag要优于Last-Modified。<ul>
+<li>Last-Modified的时间单位是秒，如果某个文件在1秒内修改了多次，那么它的Last-Modified没有体现出修改；</li>
+<li>ETag只要文件修改，就会发生改变</li>
+</ul>
+</li>
+</ul>
+<h1 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h1><ol>
+<li>强制缓存优先于协商缓存<ul>
+<li>若强制缓存生效，则直接使用缓存</li>
+<li>若不生效，则进行协商缓存</li>
+</ul>
+</li>
+<li>协商缓存有服务器决定是否使用缓存<ul>
+<li>若协商缓存失效，则代表该请求的缓存失效，响应200，并返回新的资源和缓存标识，并存入浏览器缓存中</li>
+<li>生效则相应304，标识继续使用现有缓存</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>如果什么缓存策略都没设置，那么浏览器会如何处理</p>
+</blockquote>
+<p>对于这种情况，浏览器一般采用启发式算法：</p>
+<p>去响应头中的Date减去Last-Modified值的10%作为缓存时间</p>
+<h1 id="缓存策略应用场景"><a href="#缓存策略应用场景" class="headerlink" title="缓存策略应用场景"></a>缓存策略应用场景</h1><ul>
+<li><p>频繁变动的资源</p>
+<ul>
+<li>首先使用Cache-Control：no-cache，是浏览器每次都请求服务器</li>
+<li><p>配合ETag或Last-Modified来验证资源是否过期</p>
+<p>这样碎岩不能节省请求数量，但是能显著减少响应数据的大小</p>
+</li>
+</ul>
+</li>
+<li><p>代码文件 </p>
+<p>  缓存除HTML外文件</p>
+<p>  一般来说，都会使用打包工具来打包代码，就可以对HTML文件引用的静态资源的文件名进行哈希处理，只有当文件内容发生修改后才会生成新的文件名。</p>
+<p>  因此，可以给代码文件设置缓存有效期1年Cache-Control：max-age=31536000，这样只有当HTML文件中引入的静态文件名变化了才回去下载最新的代码文件，否则一直使用缓存。</p>
+</li>
+</ul>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"66b3bec2ed166012b227","clientSecret":"aa06be78857099bba47974a90299ffa0607acea3","repo":"coolseaman/coolseaman.github.io","owner":"coolseaman","admin":["coolseaman"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/12/05/ng-rxjs-cache/" class="next">下一篇</a></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
+    //- clientID: '66b3bec2ed166012b227',
+    //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    //- repo: 'coolseaman/coolseaman.github.io',
+    //- owner: '',
+    //- admin: 'coolseaman',
+    //- id: window.location.pathname,      // Ensure uniqueness and length less than 50
+    //- distractionFreeMode: false  // Facebook-like distraction free mode
+
+    clientID: '66b3bec2ed166012b227',
+    clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    repo: 'coolseaman.github.io',
+    owner: 'coolseaman',
+    admin: ['coolseaman'],
+    id: window.location.pathname,
+    distractionFreeMode: false,
+    title: ''
+});
+gitalk.render('gitalk-container');</script><div class="copyright"><p>© 2015 - 2020 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
