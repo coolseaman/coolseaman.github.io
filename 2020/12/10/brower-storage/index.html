@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="Zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><script>(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4528ef8fec41aa4331cbdf867fe84204";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+})();
+</script><title> 浏览器数据存储方式 · HY</title><meta name="description" content="浏览器数据存储方式 - Coolseaman"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://coolseaman.github.io/atom.xml" title="HY"><meta name="generator" content="Hexo 4.2.0"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/coolseaman" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">浏览器数据存储方式</h1><div class="post-info">2020年12月10日</div><div class="post-content"><blockquote>
+<p>前端存储数据的方式有：Cookies、SessionStorage、LocalStorage、IndexedDB<br>这些存储方式都受同源策略的约束，跨域是不能访问的<br><a id="more"></a></p>
+</blockquote>
+<h1 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h1><p>Cookies并不是为了在浏览器中保存数据，而是为了保存HTTP状态，因为HTTP协议是没有状态的。例如保存用户登录的状态。</p>
+<p>服务器可以设置和读取Cookies中的信息，服务器可以通过HTTP协议规定的set-cookie在浏览器里保存cookies，之后每次HTTP请求，浏览器都会为请求自动带上Cookies信息。</p>
+<p>也可以通过JS代码手动读取和设置Cookies信息: <code>document.cookie</code></p>
+<blockquote>
+<p>Cookies包含哪些属性</p>
+</blockquote>
+<ul>
+<li>Name：键值对名字</li>
+<li>Value：键值对的值</li>
+<li>Domain：Cookies是同源策略，这是当前Cookies生效的域名</li>
+<li>Path：表示Cookies影响的路径，匹配到这个路径才会发送这个Cookies</li>
+<li>Expires/Max-Age：<ul>
+<li>Expires告诉浏览器Cookies什么时候过期，是一个绝对时间；</li>
+<li>Max-Age告诉浏览器多久后过期，一个相对时间；</li>
+<li>不设置的话，默认用户关闭浏览器就被清除，关闭tab不清楚</li>
+</ul>
+</li>
+<li>Size：表示当前保存值的大小</li>
+<li>HttpOnly：当这个值为True的时候，表示浏览器不能通过 <code>document.cookie</code> 更改Cookies的值，可以避免xss攻击更改Cookies的值。</li>
+<li>Secure：当这个值为True时，Cookies在HTTP中无效，在HTTPS中才有效</li>
+<li>SameSite：规定浏览器不能再跨域请求中携带Cookies，减少CSRF攻击</li>
+</ul>
+<blockquote>
+<p>知识点拓展</p>
+</blockquote>
+<ul>
+<li>XSS攻击（Cross Site Scripting）：跨站脚本攻击。恶意代码利用站点漏洞，通过巧妙地方式注入到网页中，使用户加载并执行攻击者的恶意代码。一般攻击者成功后，可以获得更高权限，会话和cookie等信息。利用的是用户对指定网站的信任。</li>
+<li>CSRF攻击（Cross-Site Request forgery）：跨站请求伪造。挟持用户在当前已登录的web应用程序中执行非本意的操作的攻击方法。操作成功后，可以进行例如发邮件，操作转账，购买商品等。利用的是网站对用户浏览器的信任。</li>
+</ul>
+<blockquote>
+<p>Cookies缺陷</p>
+</blockquote>
+<ul>
+<li>大小限制在4kb左右</li>
+<li>过多Cookies会浪费带宽性能。同一个域名下所有请求都会带上Cookies。</li>
+</ul>
+<p>Cookies的局限，在H5中新增了本地存储方案：WebStorage。分为两类：SessionStorage 和 LocalStorage。</p>
+<h1 id="LocalStorage"><a href="#LocalStorage" class="headerlink" title="LocalStorage"></a>LocalStorage</h1><p>存储形式key-value键值对</p>
+<blockquote>
+<p>特点</p>
+</blockquote>
+<ul>
+<li>数据一直存储，没有过期时间，除非主动清除</li>
+<li>可以在Tab之间共享数据</li>
+<li>大小5M左右</li>
+<li>易于操作，js可直接调用接口操作</li>
+<li>遵循同源策略</li>
+</ul>
+<blockquote>
+<p>局限</p>
+</blockquote>
+<ul>
+<li>高版本浏览器才支持，不过目前主流浏览器都支持</li>
+<li>值限定为string类型，需要对JSON对象做一些转换</li>
+</ul>
+<h1 id="SessionStorage"><a href="#SessionStorage" class="headerlink" title="SessionStorage"></a>SessionStorage</h1><p>相对LocalStorage，SessionStorage保存的数据只用于浏览器的一次会话，当前会话结束（浏览器窗口关闭），数据就会被清空。</p>
+<blockquote>
+<p>特点</p>
+</blockquote>
+<ul>
+<li>会话级别的浏览器存储，数据不能再Tab之间共享</li>
+<li>大小为5M左右</li>
+<li>遵循同源策略</li>
+</ul>
+<p>LocalStorage、SessionStorage都是键值对的形式进行存储，只能存储字符串，要存储对象，需要进行序列化和解析。大小都是5M，用于存储非敏感数据完全够用。但是如果遇到大规模而且结构复杂的数据时，没办法满足需求，这时候可以用到IndexedDB。</p>
+<h1 id="IndexedDB"><a href="#IndexedDB" class="headerlink" title="IndexedDB"></a>IndexedDB</h1><p>一种低级API，用于客户端存储大量结构化数据（包括文件和blobs）。该API使用索引实现高性能数据搜索，是一个运行在浏览器上的非关系型数据库，它的大小没有存储上限。</p>
+<blockquote>
+<p>特点</p>
+</blockquote>
+<ul>
+<li>键值对存储</li>
+<li>操作是异步的，不会造成浏览器卡死</li>
+<li>支持事务</li>
+<li>遵循同源</li>
+<li>大小一般不少于250M，没有上限</li>
+<li>支持二进制存储</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>只有Cookies参与服务端通信，对请求性能有影响。其他的都只用在客户端，不和服务端通信。</p>
+<p>接口用法参考MDN文档 </p>
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API" target="_blank" rel="noopener">IndexedDB</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage" target="_blank" rel="noopener">LocalhostStorage</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/sessionStorage" target="_blank" rel="noopener">SessionStorage</a></li>
+</ul>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"66b3bec2ed166012b227","clientSecret":"aa06be78857099bba47974a90299ffa0607acea3","repo":"coolseaman/coolseaman.github.io","owner":"coolseaman","admin":["coolseaman"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2020/12/10/browser-cache/" class="next">下一篇</a></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
+    //- clientID: '66b3bec2ed166012b227',
+    //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    //- repo: 'coolseaman/coolseaman.github.io',
+    //- owner: '',
+    //- admin: 'coolseaman',
+    //- id: window.location.pathname,      // Ensure uniqueness and length less than 50
+    //- distractionFreeMode: false  // Facebook-like distraction free mode
+
+    clientID: '66b3bec2ed166012b227',
+    clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
+    repo: 'coolseaman.github.io',
+    owner: 'coolseaman',
+    admin: ['coolseaman'],
+    id: window.location.pathname,
+    distractionFreeMode: false,
+    title: ''
+});
+gitalk.render('gitalk-container');</script><div class="copyright"><p>© 2015 - 2020 <a href="https://coolseaman.github.io">Coolseaman</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
