@@ -35,6 +35,27 @@
 <h2 id="服务端渲染-vs-静态渲染"><a href="#服务端渲染-vs-静态渲染" class="headerlink" title="服务端渲染 vs 静态渲染"></a>服务端渲染 vs 静态渲染</h2><p>服务端渲染不是灵丹妙药——它的动态特性可能带来巨大的计算开销成本。许多服务端渲染解决方案不会提早刷新，可能会延迟TTFB或者发送双倍的数据（例如客户端js使用内联方式）。在React中，renderToString() 由于它的同步和单线程会很慢。让服务器渲染更有效，需要寻找或构件组件缓存解决方案，管理内存消耗，应用缓存技术和其他许多问题。通常你需要多次处理、重建同一个应用——一次在客户端，一次在服务端。仅仅因为服务端渲染可以是某些事情更快地展现，并不意味着你要做更少的工作。</p>
 <p>服务端渲染会按每个URL的须有生成HTML，但要比只提供静态渲染内容慢。如果你可以进行其他工作，则服务端渲染+HTML缓存可以大大减少服务端渲染时间。服务端渲染的优势相比静态渲染在于，可以提取更多的实时数据并响应更完整的请求。请求个性化的页面是一个请求类型的具体实例，静态渲染就无法很好地处理这个例子。</p>
 <p>服务器渲染还可以在构建PWA时呈现有趣的决定。受用全页面service worker缓存 还是 仅通过服务端渲染个别内容？</p>
+<h2 id="客户端渲染（CSR）"><a href="#客户端渲染（CSR）" class="headerlink" title="客户端渲染（CSR）"></a>客户端渲染（CSR）</h2><p>客户端渲染意味着直接在浏览器中使用JavaScript渲染页面。所有的逻辑，数据获取，模板解析和路由都在客户端处理，而不是服务端。</p>
+<p>客户端渲染对于移动端很难保证可快速响应。如果项目很小、保持很小的JavaScript预算、尽可能少的RTTs，可以达到纯服务端渲染的性能。重要的脚本和数据可以使用HTTP/2 Server Push 或者 <code>&lt;link rel=&#39;preload&#39;&gt;</code> 更快地交付，这可以更快的完成解析工作。诸如PRPL的模式值得评估，以确保初始和后续的导航是即时的。</p>
+<p>客户端渲染主要的不足是随着应用程序的增长，所需JavaScript的数量也会增长。通过添加新的JavaScript库、polyfills和第三方代码，将变得尤其困难，这些第三方代码会竞争计算能力，通常要在执行完成才能渲染页面内容。基于客户端渲染并且依赖大量JavaScript包的用户体验，需要考虑主动的代码拆分，确保可以懒加载JavaScript——仅在需要时提供你所需的服务。针对交互很少或没有的体验，服务端渲染针对这些问题提供了更具拓展性的解决方案。</p>
+<p>对于构建SPA应用的人们，识别大多数页面共享的用户界面核心部分意味着你可以应用<a href="https://developers.google.com/web/updates/2015/11/app-shell" target="_blank" rel="noopener">Application Shell Caching</a>。结合service workers，可以显著提升重复访问的感知性能。</p>
+<h2 id="通过rehydration组合SSR和CSR"><a href="#通过rehydration组合SSR和CSR" class="headerlink" title="通过rehydration组合SSR和CSR"></a>通过rehydration组合SSR和CSR</h2><p>通常被称为Universal Rendering 或者 SSR，这个方法尝试同时采用客户端渲染和服务端渲染来达到一种平衡。浏览器请求（例如加载整个页面或重新加载）由服务器处理，服务器将应用渲染成HTML，然后将用于渲染的JavaScript和数据嵌入到生成的文档中。如果仔细实施，可以向服务端渲染一样实现快速的First Contentful Paint，然后使用rehydration技术在客户端再次渲染，从而提升页面响应速度。这是一个新颖的解决方案，但是具有一些相当大的性能缺陷。</p>
+<p>基于rehydration的SSR主要缺陷是：会对Time to Interactive产生重大的负面影响，即使提升了First Paint。SSR页面通常看起来已加载完成并且可以进行交互，但是实际上在执行完客户端脚本并添加事件处理前，是无法响应用户输入的。这在移动设备上会花费数秒，甚至几分钟。</p>
+<p>或许你已经亲身体验过——在看起来页面已经加载完毕之后的一段时间内，单击或点击没有反应。这很快就会让人沮丧…为什么没有效果？为什么不能滑动？</p>
+<h2 id="Rehydration的问题：一个应用，双倍的代价"><a href="#Rehydration的问题：一个应用，双倍的代价" class="headerlink" title="Rehydration的问题：一个应用，双倍的代价"></a>Rehydration的问题：一个应用，双倍的代价</h2><p>Rehydration问题常常比js导致的延迟交互更加糟糕。为了使客户端JavaScript可以更准确的获取服务端用于渲染HTML的数据而不必重新向服务端请求，当前的SSR解决方案通常会将UI的依赖数据进行序列化放进文档中的script标签内。这样生成的HTML文本包含大量的重复内容</p>
+<p>此处省略一张图。。。可看原文</p>
+<p>正如你看到的，服务端返回了应用UI的描述作为浏览器请求的响应，但是服务端也返回了生成UI的源数据，以及随后在客户端启动的UI执行的完整副本。只有bundle.js完成加载和执行，UI才能变得可交互。</p>
+<p>来自基于SSR Rehydration的真实网站的性能指标表明，强烈建议不要使用它。最终，原因归结于用户体验：非常容易使用户陷入一种不可思议的境地。</p>
+<p>不过，基于rehydration的SSR还是有希望的。在短期内，只对高度可缓存的内容使用SSR可以降低TTFB延时，从而产生与预渲染相似的效果。渐进式的Rehydration可能是未来这项技术更可行的关键。</p>
+<h2 id="流式服务端渲染-和-Progressive-Rehydration（渐进式）"><a href="#流式服务端渲染-和-Progressive-Rehydration（渐进式）" class="headerlink" title="流式服务端渲染 和 Progressive Rehydration（渐进式）"></a>流式服务端渲染 和 Progressive Rehydration（渐进式）</h2><p>过去几年，服务端渲染已经获得了很大的发展。</p>
+<p>流式服务端渲染允许你分块发送HTML，浏览器可以在接收时逐步进行渲染。这可以提供快速的First Paint和First Contentful Paint，随着markup更快地到达用户端。在React中，相比同步的<code>renderToString()</code>，在<code>renderToNodeStream()</code>中异步流意味着可以更好的处理背压。</p>
+<p>Progressive rehydration 值得关注，React一直在探索一些东西。使用这种方法，服务端渲染应用的各个部分会随着时间逐步启动，而不像当前通用方法一次性初始化整个应用。这可以帮助减少页面实现可交互所需的JavaScript数量。因为页面低优先级的部分被推迟加载，避免阻塞主线程。它还可以帮助避免最常见的SSR Rehydration陷阱，服务端渲染的DOM树被破坏后立即重建——通常是因为初始化同步的客户端渲染所请求的数据还没有准备好，可能要等待Promise的解决方案。</p>
+<p><strong>Partial Rehydration</strong><br>Partial Rehydration已经被证明很难实施。这个方法时Progressive Rehydration思想的一个拓展，在其中各个部分需要被分析，确定哪些部分是交互性少的或者没有交互性的。对于每个静态部分，将相应的JavaScript代码转化为惰性引用和装饰性功能，从而减少客户端脚本减小到0。Partial Rehydration方案提出了问题和折中方案。他给缓存带了挑战，客户端浏览器意味着我们不能在没有整个页面加载的情况下，假设为应用惰性部分服务端渲染的HTML不可用。</p>
+<p><strong>Trisomorphic Rendering</strong><br>如果service workers 作为一个选项，trisomorhoic rendering或许会是有趣的。它可以让你使用流式服务端渲染初始/非JS导航，完成之后，让你的service workers渲染HTML。这可以使缓存的组件和模板保持更新，并在启用SPA-style导航为了在同一个会话中渲染新的视图。这个方法非常有效，当你可以分享相同的模板和路由代码在服务器、客户端页和service worker之间。</p>
+<h2 id="SEO注意事项"><a href="#SEO注意事项" class="headerlink" title="SEO注意事项"></a>SEO注意事项</h2><p>选择Web渲染策略时，团队通常会考虑SEO的影响。通常选择服务端渲染来提供爬虫可以轻松获取的完整页面。爬虫或许理解JavaScript，但是在渲染方式上的局限性值得我们注意。客户端渲染可以起作用，但需要额外的测试和leg-work。最近，如果你的架构受客户端JavaScript驱动，动态渲染也成为值得考虑的选项。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://developers.google.com/web/updates/2019/02/rendering-on-the-web" target="_blank" rel="noopener">Rendering on the Web</a></li>
+</ul>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
