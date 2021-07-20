@@ -53,6 +53,27 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line">  secret)</span><br></pre></td></tr></table></figure>
 <p>签名被用来确认信息一直没有被改变，并且在令牌使用私钥签名的场景中，可以验证JWT的发送者是否就是他所说的那个人。</p>
 <p><strong>组合在一起</strong><br>结果是三个由点分隔的Base64Url编码过的字符串组成，JWT可以很容易地在HTML和HTTP环境中传递，和XML-based标准（如SAML）相比，JWT更紧凑。</p>
+<h1 id="JSON-Web-Token-如何工作"><a href="#JSON-Web-Token-如何工作" class="headerlink" title="JSON Web Token 如何工作?"></a>JSON Web Token 如何工作?</h1><p>在身份验证中，当用户使用身份凭证成功登录时，将会返回一个JSON Web Token。因为令牌是登录凭证，所以必须非常小心避免安全问题。通常，你不应该让令牌的有效期超过所需的时间。</p>
+<p><a href="https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#local-storage" target="_blank" rel="noopener">由于缺乏安全性，你也不应该将敏感的会话数据存储在浏览器存储中。</a></p>
+<p>任何时候用户想要访问受保护的路由或者资源，用户代理应该发送JWT，JWT通常在请求的头部Authorization字段中，使用Bearer模式。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: Bearer &lt;jwt token&gt;</span><br></pre></td></tr></table></figure>
+<p>在某些情况下，可以是无状态授权机制。服务端受保护的路由将会检查请求头部JWT的有效性，如果有效，用户将被允许访问受保护的资源。如果JWT包含必要的信息，可以减少某些操作查询数据库的需要，尽管这种情况并不总出现。</p>
+<p>如果令牌在请求头部的Authorization中被发送，那么跨域资源分享将不会是一个问题，因为他不是用cookies。</p>
+<p>下图展示了JWT如何获取并访问API或资源：<img src="media/16267701971259.png" alt=""></p>
+<ol>
+<li>应用或客户端向授权服务器请求授权。这通过不同的授权流程的其中一个进行的。</li>
+<li>当获取授权后，授权服务器将会向应用返回一个访问令牌。</li>
+<li>应用通过访问令牌来访问受保护的资源（例如API）。</li>
+</ol>
+<p>请注意，在使用签名令牌时，令牌中包含的所有信息都会暴露给用户和各方，即使他们无法修改相关信息。这意味着你不应该在令牌中放置加密信息。</p>
+<h1 id="为什么要使用JSON-Web-Token"><a href="#为什么要使用JSON-Web-Token" class="headerlink" title="为什么要使用JSON Web Token?"></a>为什么要使用JSON Web Token?</h1><p>让我们来讨论一下JWT相对SWT（Simple Web Tokens）和SAML（Security Assertion Markup Language Tokens）的优势。</p>
+<p>因为JSON没有XML冗长，当它编码后大小也更小，所以使得JWT比SAML更紧凑。这使得JWT成为在HTML和HTTP环境中传递的一个好的选择。</p>
+<p>安全方面，SWT只能使用HMAC算法通过共享秘钥进行对称签名。然而，JWT和SAML令牌可以使用X.509证书形式的公钥/秘钥对进行签名。与签名 JSON 的简单性相比，在不引入隐藏的安全漏洞的情况下使用 XML 数字签名签署 XML 是非常困难的。</p>
+<p>JSON解析在大多数的编程语言中都是常见的，因为他们直接映射到对象。相反地，XML没有自然的文档到对象的映射。这使得JWT相比SAML更加简单。</p>
+<p>关于使用，JWT 用于互联网规模。这突出了客户端在多个平台（尤其是移动平台）上处理JWT的简便性。</p>
+<blockquote>
+<p>原文：<a href="https://jwt.io/introduction" target="_blank" rel="noopener">Introduction to JSON Web Tokens</a></p>
+</blockquote>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -62,7 +83,7 @@
 	    gitalkConfig.id = md5(location.pathname);
 		var gitalk = new Gitalk(gitalkConfig);
 	    gitalk.render("gitalk-container");
-	    </script></div></article></div></main><footer><div class="paginator"><a href="/2021/02/20/email-subscribe/" class="next">NEXT</a></div>
+	    </script></div></article></div></main><footer><div class="paginator"><a href="/2021/02/20/email-subscribe/" class="next">下一篇</a></div>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script>gitalk = new Gitalk({
     //- clientID: '66b3bec2ed166012b227',
     //- clientSecret: 'aa06be78857099bba47974a90299ffa0607acea3',
