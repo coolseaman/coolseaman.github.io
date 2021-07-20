@@ -59,7 +59,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: Bearer &lt;jwt token&gt;</span><br></pre></td></tr></table></figure>
 <p>在某些情况下，可以是无状态授权机制。服务端受保护的路由将会检查请求头部JWT的有效性，如果有效，用户将被允许访问受保护的资源。如果JWT包含必要的信息，可以减少某些操作查询数据库的需要，尽管这种情况并不总出现。</p>
 <p>如果令牌在请求头部的Authorization中被发送，那么跨域资源分享将不会是一个问题，因为他不是用cookies。</p>
-<p>下图展示了JWT如何获取并访问API或资源：<img src="img/16267701971259.png" alt=""></p>
+<p>下图展示了JWT如何获取并访问API或资源：<img src="/img/16267701971259.png" alt=""></p>
 <ol>
 <li>应用或客户端向授权服务器请求授权。这通过不同的授权流程的其中一个进行的。</li>
 <li>当获取授权后，授权服务器将会向应用返回一个访问令牌。</li>
